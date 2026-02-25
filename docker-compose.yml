@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: boekenhandel
+      POSTGRES_PASSWORD: boekenhandel
+      POSTGRES_DB: boekenhandel
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./migrations:/migrations
+
+volumes:
+  pgdata:
