@@ -1,5 +1,4 @@
 import { query } from "./db";
-import { formatCurrency } from "./format-currency";
 
 type BookRow = {
   id: number;
@@ -35,7 +34,7 @@ export default async function Home() {
               <p className="font-semibold">{book.title}</p>
               <p className="mt-1 text-sm text-zinc-500">{book.authors}</p>
               <p className="mt-2 font-mono text-sm">
-                {formatCurrency(book.price_cents)}
+                &euro;{(book.price_cents / 100).toFixed(2)}
               </p>
             </li>
           ))}

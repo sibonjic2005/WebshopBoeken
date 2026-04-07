@@ -54,3 +54,15 @@ INSERT INTO book_category (book_id, category_id) VALUES
   (7, 1),   -- Le Petit Prince: Fiction
   (8, 6),   -- Salt, Fat, Acid, Heat: Cooking
   (9, 7);   -- Code Complete: Software
+
+INSERT INTO customer (id, email, password_hash, first_name, last_name) VALUES
+  (1, 'alice.jansen@example.com',   'hashed_pw_1', 'Alice',   'Jansen'),
+  (2, 'bob.devries@example.com',    'hashed_pw_2', 'Bob',     'de Vries'),
+  (3, 'carla.smit@example.com',     'hashed_pw_3', 'Carla',   'Smit'),
+  (4, 'david.bakker@example.com',   'hashed_pw_4', 'David',   'Bakker'),
+  (5, 'emma.visser@example.com',    'hashed_pw_5', 'Emma',    'Visser'),
+  (6, 'finn.meijer@example.com',    'hashed_pw_6', 'Finn',    'Meijer'),
+  (7, 'lisa.mulder@example.com',    'hashed_pw_7', 'Lisa',    'Mulder'),
+  (8, 'milan.dejong@example.com',   'hashed_pw_8', 'Milan',   'de Jong'),
+  (9, 'noa.kok@example.com',        'hashed_pw_9', 'Noa',     'Kok'),
+  (10,'oliver.jacobs@example.com',  'hashed_pw_10','Oliver',  'Jacobs');

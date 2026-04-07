@@ -5,10 +5,10 @@
   "scripts": {
     "db": "docker compose up -d",
     "migrate": "docker compose exec db psql -U boekenhandel -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' -f /migrations/001_schema.sql -f /migrations/002_seed.sql",
-    "dev": "bun run db && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint && next lint"
   },
   "dependencies": {
     "next": "16.1.6",
