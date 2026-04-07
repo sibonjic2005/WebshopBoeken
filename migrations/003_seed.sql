@@ -1,0 +1,56 @@
+INSERT INTO publisher (id, name) VALUES
+  (1, 'Scribner'),
+  (2, 'Secker & Warburg'),
+  (3, 'Harper & Brothers'),
+  (4, 'T. Egerton'),
+  (5, 'The Russian Messenger'),
+  (6, 'Ballantine Books'),
+  (7, 'Gallimard'),
+  (8, 'Simon & Schuster'),
+  (9, 'Microsoft Press');
+
+INSERT INTO author (id, first_name, last_name, bio) VALUES
+  (1, 'George', 'Orwell', 'English novelist known for his social criticism.'),
+  (2, 'Herman', 'Melville', 'American writer of the American Renaissance period.'),
+  (3, 'Jane', 'Austen', 'English novelist known for her realism and social commentary.'),
+  (4, 'Fyodor', 'Dostoevsky', 'Russian novelist and philosopher.'),
+  (5, 'Ray', 'Bradbury', 'American author known for his dystopian works.'),
+  (6, 'Ernest', 'Hemingway', 'American novelist and Nobel laureate.'),
+  (7, 'Antoine', 'de Saint-Exupéry', 'French writer and aviator.'),
+  (8, 'Samin', 'Nosrat', 'American chef and food writer.'),
+  (9, 'Steve', 'McConnell', 'American software engineer and author.');
+
+INSERT INTO category (id, name, description) VALUES
+  (1, 'Fiction', 'Literary fiction and novels'),
+  (2, 'Science Fiction', 'Speculative and dystopian fiction'),
+  (3, 'Adventure', 'Adventure and exploration'),
+  (4, 'Romance', 'Romantic fiction'),
+  (5, 'Philosophy', 'Philosophical and existential works'),
+  (6, 'Cooking', 'Food, recipes, and culinary technique'),
+  (7, 'Software', 'Software engineering and programming');
+
+INSERT INTO book (id, title, isbn, price_cents, stock, publisher_id) VALUES
+  (1,  'Nineteen Eighty-Four',       '978-0-452-28423-4', 1195, 24, 2),
+  (2,  'Moby-Dick',                  '978-0-14-243724-7', 1295, 12, 3),
+  (3,  'Pride and Prejudice',        '978-0-19-953556-9',  995, 30, 4),
+  (4,  'Crime and Punishment',       '978-0-14-044913-6', 1195, 15, 5),
+  (5,  'Fahrenheit 451',             '978-1-4516-7331-8', 1095, 20, 6),
+  (6,  'The Old Man and the Sea',    '978-0-684-80122-3',  895, 25, 1),
+  (7,  'Le Petit Prince',            '978-2-07-061275-8',  895, 28, 7),
+  (8,  'Salt, Fat, Acid, Heat',     '978-1-4767-5397-8', 2495, 16, 8),
+  (9,  'Code Complete 2',            '978-0-7356-1967-8', 3995,  8, 9);
+
+INSERT INTO book_author (book_id, author_id) VALUES
+  (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9);
+
+INSERT INTO book_category (book_id, category_id) VALUES
+  (1, 2),   -- Nineteen Eighty-Four: Science Fiction
+  (2, 3),   -- Moby-Dick: Adventure
+  (3, 4),   -- Pride and Prejudice: Romance
+  (4, 1),   -- Crime and Punishment: Fiction
+  (4, 5),   -- Crime and Punishment: Philosophy
+  (5, 2),   -- Fahrenheit 451: Science Fiction
+  (6, 1),   -- The Old Man and the Sea: Fiction
+  (7, 1),   -- Le Petit Prince: Fiction
+  (8, 6),   -- Salt, Fat, Acid, Heat: Cooking
+  (9, 7);   -- Code Complete: Software
