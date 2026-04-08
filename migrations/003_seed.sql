@@ -75,9 +75,10 @@ INSERT INTO customer (id, email, password_hash, first_name, last_name) VALUES
 ON CONFLICT DO NOTHING;
 
 INSERT INTO cart (user_id, book_id, quantity) VALUES
-  (1, 1, 2),  -- Alice has 2x Nineteen Eighty-Four
-  (1, 3, 1),  -- Alice has 1x Pride and Prejudice
-  (2, 5, 1),  -- Bob has 1x Fahrenheit 451
-  (2, 9, 1),  -- Bob has 1x Code Complete 2
-  (3, 7, 3)   -- Carla has 3x Le Petit Prince
+  (1, 1, 2),
+  (1, 3, 1),
+  (2, 5, 1),
+  (2, 9, 1),
+  (3, 7, 3)
+ON CONFLICT DO NOTHING;
 
