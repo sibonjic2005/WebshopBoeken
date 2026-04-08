@@ -21,15 +21,10 @@ export async function getCart(userId: number) {
         title: string;
         price_cents: number;
         quantity: number;
-    }>(
-        `SELECT 
-            c.book_id as "bookId",
-            b.title,
-            b.price_cents,
-            c.quantity
-         FROM cart c
-         JOIN book b ON c.book_id = b.id
-         WHERE c.user_id = $1`,
+    }>(`SELECT c.book_id as "bookId", b.title, b.price_cents, c.quantity
+        FROM cart c
+        JOIN book b ON c.book_id = b.id
+        WHERE c.user_id = $1`,  
         [userId]
     );
     return rows;
