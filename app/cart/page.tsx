@@ -1,145 +1,88 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import Link from "next/link";
 import { getCart, removeFromCart, updateCartQuantity, clearCart } from "./actions";
+import { formatCurrency } from "@/app/format-currency";
 
-interface CartItem {
-    bookId: number;
-    title: string;
-    price_cents: number;
-    quantity: number;
-}
+const userId = 1; // hardcoded until auth is built
 
-export default function CartPage() {
-    const [cart, setCart] = useState<CartItem[]>([]);
-    const [userId, setUserId] = useState<number>(1); // Hardcoded for now
-    const [loading, setLoading] = useState(true);
+export default async function CartPage() {
+    const cart = await getCart(userId);
 
-    // Load cart on page load
-    useEffect(() => {
-        loadCart();
-    }, []);
-
-    const loadCart = async () => {
-        try {
-            const items = await getCart(userId);
-            setCart(items);
-        } catch (error) {
-            console.error("Failed to load cart:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleRemove = async (bookId: number) => {
-        await removeFromCart(userId, bookId);
-        setCart(cart.filter(item => item.bookId !== bookId));
-    };
-
-    const handleUpdateQuantity = async (bookId: number, newQuantity: number) => {
-        if (newQuantity < 1) return;
-        
-        await updateCartQuantity(userId, bookId, newQuantity);
-        setCart(cart.map(item =>
-            item.bookId === bookId
-                ? { ...item, quantity: newQuantity }
-                : item
-        ));
-    };
-
-    const handleClearCart = async () => {
-        await clearCart(userId);
-        setCart([]);
-    };
-
-    // Calculate totals
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + (item.price_cents * item.quantity), 0);
-    const totalPriceFormatted = (totalPrice / 100).toFixed(2);
 
-    if (loading) {
-        return <p className="p-8">Loading cart...</p>;
-    }
-
-    if (cart.length === 0) {
+    if (cart.length == 0) {
         return (
-            <div className="p-8 bg-white rounded">
+            <div className="p-8">
                 <p className="text-xl mb-4">Your cart is empty</p>
-                <a href="/" className="text-blue-600 underline">Continue shopping</a>
+                <Link href="/" className="text-blue-600 hover:underline">Continue shopping</Link>
             </div>
         );
     }
 
     return (
-        <div className="p-8 bg-white rounded">
+        <div className="p-8">
             <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
 
-            <table className="w-full border-collapse mb-8">
+            <table className="w-full text-left text-sm">
                 <thead>
-                    <tr className="border-b">
-                        <th className="text-left p-2">Book</th>
-                        <th className="text-left p-2">Price</th>
-                        <th className="text-left p-2">Quantity</th>
-                        <th className="text-left p-2">Subtotal</th>
-                        <th className="text-left p-2">Action</th>
+                    <tr className="border-b dark:border-zinc-800">
+                        <th className="pb-2 font-medium">Books</th>
+                        <th className="pb-2 font-medium">Price</th>
+                        <th className="pb-2 font-medium">Quantity</th>
+                        <th className="pb-2 font-medium">Subtotal</th>
+                        <th className="pb-2 font-medium">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {cart.map(item => (
-                        <tr key={item.bookId} className="border-b">
-                            <td className="p-2">{item.title}</td>
-                            <td className="p-2">€{(item.price_cents / 100).toFixed(2)}</td>
-                            <td className="p-2">
+                        <tr key={item.bookId} className="border-b dark:border-zinc-800">
+                            <td className="py-2">{item.title}</td>
+                            <td className="py-2">{formatCurrency(item.price_cents)}</td>
+                            <td className="py-2">{item.quantity}</td>
+                            <td className="py-2">{formatCurrency(item.price_cents * item.quantity)}</td>
+                            <td className="py-2">
                                 <div className="flex gap-2">
-                                    <button
-                                        onClick={() => handleUpdateQuantity(item.bookId, item.quantity - 1)}
-                                        className="bg-gray-200 px-2 py-1 rounded"
-                                    >
-                                        -
-                                    </button>
-                                    <span className="px-3 py-1">{item.quantity}</span>
-                                    <button
-                                        onClick={() => handleUpdateQuantity(item.bookId, item.quantity + 1)}
-                                        className="bg-gray-200 px-2 py-1 rounded"
-                                    >
-                                        +
-                                    </button>
+                                    <form action={async () => {
+                                        "use server";
+                                        await updateCartQuantity(userId, item.bookId, item.quantity - 1);
+                                    }}>
+                                        <button type="submit" className="px-2 py-1 bg-zinc-200 rounded dark:bg-zinc-700">-</button>
+                                    </form>
+                                    <form action={async () => {
+                                        "use server";
+                                        await updateCartQuantity(userId, item.bookId, item.quantity + 1);
+                                    }}>
+                                        <button type="submit" className="px-2 py-1 bg-zinc-200 rounded dark:bg-zinc-700">+</button>
+                                    </form>
+                                    <form action={async () => {
+                                        "use server";
+                                        await removeFromCart(userId, item.bookId);
+                                    }}>
+                                        <button type="submit" className="text-red-600 hover:underline dark:text-red-400">Remove</button>
+                                    </form>
                                 </div>
-                            </td>
-                            <td className="p-2">€{((item.price_cents * item.quantity) / 100).toFixed(2)}</td>
-                            <td className="p-2">
-                                <button
-                                    onClick={() => handleRemove(item.bookId)}
-                                    className="bg-red-500 text-white px-3 py-1 rounded"
-                                >
-                                    Remove
-                                </button>
                             </td>
                         </tr>
                     ))}
                 </tbody>
             </table>
 
-            <div className="flex justify-between items-center mb-6 p-4 bg-gray-100 rounded">
+            <div className="mt-6 flex items-center justify-between">
                 <div>
-                    <p className="text-lg">Total Items: {totalItems}</p>
-                    <p className="text-2xl font-bold">Total: €{totalPriceFormatted}</p>
+                    <p className="text-sm text-zinc-500">Total items: {totalItems}</p>
+                    <p className="text-xl font-bold">Total: {formatCurrency(totalPrice)}</p>
                 </div>
-                <button
-                    onClick={handleClearCart}
-                    className="bg-gray-500 text-white px-4 py-2 rounded"
-                >
-                    Clear Cart
-                </button>
-            </div>
-
-            <div className="flex gap-4">
-                <a href="/" className="bg-gray-600 text-white px-6 py-2 rounded">
-                    Continue Shopping
-                </a>
-                <a href="/checkout" className="bg-blue-600 text-white px-6 py-2 rounded">
-                    Proceed to Checkout
-                </a>
+                <div className="flex gap-4">
+                    <form action={async () => {
+                        "use server";
+                        await clearCart(userId);
+                    }}>
+                        <button type="submit" className="px-4 py-2 bg-zinc-200 rounded dark:bg-zinc-700">Clear cart</button>
+                    </form>
+                    <Link href="/checkout" className="px-4 py-2 bg-zinc-900 text-white rounded hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
+                        Proceed to checkout
+                    </Link>
+                </div>
             </div>
         </div>
     );

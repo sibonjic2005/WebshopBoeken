@@ -1,9 +1,10 @@
 "use server";
 
 import { query } from "@/app/db";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-// Add item to cart
+// item toevoegen aan cart.
 export async function addToCart(userId: number, bookId: number, quantity: number = 1) {
     await query(
         `INSERT INTO cart (user_id, book_id, quantity) 
@@ -11,10 +12,12 @@ export async function addToCart(userId: number, bookId: number, quantity: number
          ON CONFLICT (user_id, book_id) 
          DO UPDATE SET quantity = cart.quantity + $3`,
         [userId, bookId, quantity]
+        //on conflict DO update zorgt ervoor dat als er al een item in de cart zit, de quantity wordt verhoogd in plaats van een nieuwe rij toe te voegen.
     );
+    revalidatePath("/cart");
 }
 
-// Get all items in cart
+// alle items in cart ophalen
 export async function getCart(userId: number) {
     const rows = await query<{
         bookId: number;
@@ -30,21 +33,22 @@ export async function getCart(userId: number) {
     return rows;
 }
 
-// Update quantity in cart
+// Update de quantity van een item in de cart
 export async function updateCartQuantity(userId: number, bookId: number, quantity: number) {
     if (quantity <= 0) {
-        // If quantity is 0 or less, remove the item
+        // als quantity 0 of minder is, verwijder het item uit de cart
         await query(
             "DELETE FROM cart WHERE user_id = $1 AND book_id = $2",
             [userId, bookId]
         );
     } else {
-        // Otherwise update the quantity
+        // Anders update de quantity
         await query(
-            "UPDATE cart SET quantity = $3 WHERE user_id = $1 AND book_id = $2",
-            [userId, bookId, quantity]
+            "UPDATE cart SET quantity = $1 WHERE user_id = $2 AND book_id = $3",
+            [quantity, userId, bookId]
         );
     }
+    revalidatePath("/cart"); 
 }
 
 // Remove item from cart
@@ -53,6 +57,7 @@ export async function removeFromCart(userId: number, bookId: number) {
         "DELETE FROM cart WHERE user_id = $1 AND book_id = $2",
         [userId, bookId]
     );
+    revalidatePath("/cart");
 }
 
 // Clear entire cart
@@ -61,4 +66,5 @@ export async function clearCart(userId: number) {
         "DELETE FROM cart WHERE user_id = $1",
         [userId]
     );
+    revalidatePath("/cart");
 }
