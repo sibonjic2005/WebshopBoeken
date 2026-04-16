@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getCart, removeFromCart, updateCartQuantity, clearCart } from "./actions";
 import { formatCurrency } from "@/app/format-currency";
 
-const userId = 1; // hardcoded until auth is built
+const userId = 1; // voor nu even hardcoded.
 
 export default async function CartPage() {
     const cart = await getCart(userId);
@@ -34,7 +34,7 @@ export default async function CartPage() {
                     </tr>
                 </thead>
                 <tbody>
-                    {cart.map(item => (
+                    {cart.map(item => ( //hierdoor loopt het door alles in cart, het generate een tr (table row) voor elke
                         <tr key={item.bookId} className="border-b dark:border-zinc-800">
                             <td className="py-2">{item.title}</td>
                             <td className="py-2">{formatCurrency(item.price_cents)}</td>
