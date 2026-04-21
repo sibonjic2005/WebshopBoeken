@@ -1,5 +1,4 @@
 import React from "react";
-import '../styles/BookDetails.css'
 
 const BookDetails = () => {
   return (
