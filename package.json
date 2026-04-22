@@ -8,7 +8,8 @@
     "dev": "bun run db && next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint && next lint",
+    "import-books": "bun run scripts/import-books.ts"
   },
   "dependencies": {
     "next": "16.1.6",
