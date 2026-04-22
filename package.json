@@ -5,17 +5,19 @@
   "scripts": {
     "db": "docker compose up -d",
     "migrate": "docker compose exec db psql -U boekenhandel -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' -f /migrations/001_schema.sql -f /migrations/002_seed.sql",
-    "dev": "bun run db && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint && next lint",
     "import-books": "bun run scripts/import-books.ts"
   },
   "dependencies": {
+    "@types/swagger-ui-react": "^5.18.0",
     "next": "16.1.6",
     "pg": "^8.18.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "swagger-ui-react": "^5.32.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
