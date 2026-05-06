@@ -1,33 +1,11 @@
-// "use server";
-
-// import { query } from "@/app/db";
-// import { redirect } from "next/navigation";
-
-// export async function placeOrder(UserData: FormData) {
-//   const firstName = UserData.get("firstName") as string;
-//   const lastName = UserData.get("lastName") as string;
-//   const email = UserData.get("email") as string;
-//   const street = UserData.get("street") as string;
-//   const postalCode = UserData.get("postalCode") as string;
-//   const city = UserData.get("city") as string;
-//   const paymentMethod = UserData.get("paymentMethod") as string;
-
-//   // Create order in database
-//   const rows = await query<{ id: number }>(
-//     "INSERT INTO shop_order (user_id, total_amount, status) VALUES ($1, $2, $3) RETURNING id",
-//     [1, 0, "pending"]
-//   );
-
-//   const orderId = rows[0].id;
-
-//   redirect("/order-confirmation");
-// }
-
 "use server";
 
 import { query } from "@/app/db";
 import { getCart, clearCart } from "@/app/cart/actions";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
+// Een nieuwe bestelling plaatsen op basis van de cart en user info
 export async function placeOrder(userInfo: FormData, userId: number) {
     const firstName = userInfo.get("firstName") as string;
     const lastName = userInfo.get("lastName") as string;
@@ -37,40 +15,44 @@ export async function placeOrder(userInfo: FormData, userId: number) {
     const city = userInfo.get("city") as string;
     const paymentMethod = userInfo.get("paymentMethod") as string;
 
-    // alle items in cart ophalen
+    // 1. Alle items in de cart ophalen voor deze gebruiker
     const cartItems = await getCart(userId);
 
     if (cartItems.length === 0) {
-        throw new Error("Cart is empty");
+        throw new Error("Cart is leeg, kan geen bestelling plaatsen.");
     }
 
-    // bereken totaalprijs van de order
-    const totalPrice = cartItems.reduce((sum, item) => sum + (item.price_cents * item.quantity), 0);
-    const totalAmount = totalPrice / 100; // van cent naar euro
+    // 2. Bereken totaalprijs van de order (in euro's)
+    const totalAmount = cartItems.reduce((sum, item) => {
+        return sum + (item.price_cents * item.quantity);
+    }, 0) / 100;
 
-    // shop order aanmaken
+    // 3. De hoofdorder aanmaken in 'shop_order'
+    // We slaan de status op als 'completed' (of 'pending' afhankelijk van je flow)
     const orderRows = await query<{ id: number }>(
-        "INSERT INTO shop_order (user_id, status, total_amount) VALUES ($1, $2, $3) RETURNING id", 
+        `INSERT INTO shop_order (user_id, status, total_amount) 
+         VALUES ($1, $2, $3) 
+         RETURNING id`, 
         [userId, "completed", totalAmount]
     );
     const orderId = orderRows[0].id;
 
-    // orderline vullen met items uit cart
+    // 4. Order_lines vullen met de items uit de cart
     for (const item of cartItems) {
+        const priceAtPurchase = (item.price_cents / 100).toFixed(2);
+        
         await query(
-            "INSERT INTO order_line (order_id, book_id, quantity, price_at_purchase) VALUES ($1, $2, $3, $4)",
-            [orderId, item.bookId, item.quantity, (item.price_cents / 100).toFixed(2)]
+            `INSERT INTO order_line (order_id, book_id, quantity, price_at_purchase) 
+             VALUES ($1, $2, $3, $4)`,
+            [orderId, item.bookId, item.quantity, priceAtPurchase]
         );
-        //toFixed om af te ronden op 2 decimalen.
     }
 
-    // cart leegmaken
+    // 5. De cart leegmaken na een succesvolle bestelling
     await clearCart(userId);
 
-    // redirected naar order confirmation page komt hieronder later
-
+    // 6. Cache updaten en gebruiker doorsturen
+    revalidatePath("/cart");
+    // Zorg dat deze route bestaat in je app folder
+    redirect(`/order-confirmation?orderId=${orderId}`);
 }
-
-
-
-
