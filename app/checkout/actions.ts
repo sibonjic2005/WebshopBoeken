@@ -28,7 +28,6 @@ export async function placeOrder(userInfo: FormData, userId: number) {
     }, 0) / 100;
 
     // 3. De hoofdorder aanmaken in 'shop_order'
-    // We slaan de status op als 'completed' (of 'pending' afhankelijk van je flow)
     const orderRows = await query<{ id: number }>(
         `INSERT INTO shop_order (user_id, status, total_amount) 
          VALUES ($1, $2, $3) 
