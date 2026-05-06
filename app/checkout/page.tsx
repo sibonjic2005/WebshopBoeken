@@ -14,7 +14,6 @@ export default async function CheckoutPage() {
         redirect("/cart");
     }
 
-    // De server action koppelen aan een lokale functie zodat we userId mee kunnen geven
     async function handlePlaceOrder(formData: FormData) {
         "use server";
         await placeOrder(formData, userId);
@@ -25,7 +24,6 @@ export default async function CheckoutPage() {
             <h1 className="text-3xl font-bold mb-8">Checkout</h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-                {/* Linker kant: Formulier */}
                 <section>
                     <h2 className="text-xl font-semibold mb-4">Shipping Details</h2>
                     <form action={handlePlaceOrder} className="flex flex-col gap-4">
