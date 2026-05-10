@@ -13,29 +13,29 @@ export default async function CartPage() {
     if (cart.length == 0) {
         return (
             <div className="p-8">
-                <p className="text-xl mb-4">Your cart is empty</p>
-                <Link href="/" className="text-blue-600 hover:underline">Continue shopping</Link>
+                <p className="text-xl mb-4">Je winkelwagen is leeg.</p>
+                <Link href="/" className="text-blue-600 hover:underline">Verder winkelen</Link>
             </div>
         );
     }
 
     return (
         <div className="p-8">
-            <h1 className="text-2xl font-bold mb-6">Shopping Cart</h1>
+            <h1 className="text-2xl font-bold mb-6">Winkelwagen</h1>
 
             <table className="w-full text-left text-sm">
                 <thead>
-                    <tr className="border-b dark:border-zinc-800">
-                        <th className="pb-2 font-medium">Books</th>
-                        <th className="pb-2 font-medium">Price</th>
-                        <th className="pb-2 font-medium">Quantity</th>
-                        <th className="pb-2 font-medium">Subtotal</th>
-                        <th className="pb-2 font-medium">Actions</th>
+                    <tr className="border-b">
+                        <th className="pb-2 font-medium">Boek</th>
+                        <th className="pb-2 font-medium">Prijs</th>
+                        <th className="pb-2 font-medium">Aantal</th>
+                        <th className="pb-2 font-medium">Subtotaal</th>
+                        <th className="pb-2 font-medium"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {cart.map(item => ( //hierdoor loopt het door alles in cart, het generate een tr (table row) voor elke
-                        <tr key={item.bookId} className="border-b dark:border-zinc-800">
+                        <tr key={item.bookId} className="border-b">
                             <td className="py-2">{item.title}</td>
                             <td className="py-2">{formatCurrency(item.price_cents)}</td>
                             <td className="py-2">{item.quantity}</td>
@@ -46,19 +46,19 @@ export default async function CartPage() {
                                         "use server";
                                         await updateCartQuantity(userId, item.bookId, item.quantity - 1);
                                     }}>
-                                        <button type="submit" className="px-2 py-1 bg-zinc-200 rounded dark:bg-zinc-700">-</button>
+                                        <button type="submit" className="px-2 py-1 bg-zinc-200 rounded">-</button>
                                     </form>
                                     <form action={async () => {
                                         "use server";
                                         await updateCartQuantity(userId, item.bookId, item.quantity + 1);
                                     }}>
-                                        <button type="submit" className="px-2 py-1 bg-zinc-200 rounded dark:bg-zinc-700">+</button>
+                                        <button type="submit" className="px-2 py-1 bg-zinc-200 rounded">+</button>
                                     </form>
                                     <form action={async () => {
                                         "use server";
                                         await removeFromCart(userId, item.bookId);
                                     }}>
-                                        <button type="submit" className="text-red-600 hover:underline dark:text-red-400">Remove</button>
+                                        <button type="submit" className="text-red-600 hover:underline">Verwijder</button>
                                     </form>
                                 </div>
                             </td>
@@ -69,18 +69,18 @@ export default async function CartPage() {
 
             <div className="mt-6 flex items-center justify-between">
                 <div>
-                    <p className="text-sm text-zinc-500">Total items: {totalItems}</p>
-                    <p className="text-xl font-bold">Total: {formatCurrency(totalPrice)}</p>
+                    <p className="text-sm text-zinc-500">Aantal: {totalItems}</p>
+                    <p className="text-xl font-bold">Totaal: {formatCurrency(totalPrice)}</p>
                 </div>
                 <div className="flex gap-4">
                     <form action={async () => {
                         "use server";
                         await clearCart(userId);
                     }}>
-                        <button type="submit" className="px-4 py-2 bg-zinc-200 rounded dark:bg-zinc-700">Clear cart</button>
+                        <button type="submit" className="px-4 py-2 bg-zinc-200 rounded">Leegmaken</button>
                     </form>
-                    <Link href="/checkout" className="px-4 py-2 bg-zinc-900 text-white rounded hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900">
-                        Proceed to checkout
+                    <Link href="/checkout" className="px-4 py-2 bg-zinc-900 text-white rounded hover:bg-zinc-700">
+                        Afrekenen
                     </Link>
                 </div>
             </div>

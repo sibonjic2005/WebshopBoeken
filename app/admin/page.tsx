@@ -16,7 +16,7 @@ export default function AdminPage() {
           <li key={s.href}>
             <Link
               href={s.href}
-              className="block rounded-lg border bg-white p-6 font-semibold hover:border-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
+              className="block rounded-lg border bg-white p-6 font-semibold hover:border-zinc-400"
             >
               {s.label}
             </Link>

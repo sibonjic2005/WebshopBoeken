@@ -24,7 +24,7 @@ export default async function NewOrderPage() {
             id="user_id"
             name="user_id"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           >
             <option value="">Select customer</option>
             {users.map((u) => (
@@ -41,7 +41,7 @@ export default async function NewOrderPage() {
           <select
             id="status"
             name="status"
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           >
             <option value="pending">Pending</option>
             <option value="processing">Processing</option>
@@ -55,7 +55,7 @@ export default async function NewOrderPage() {
           {books.map((book) => (
             <div
               key={book.id}
-              className="flex items-center gap-2 rounded border px-3 py-2 text-sm dark:border-zinc-700"
+              className="flex items-center gap-2 rounded border px-3 py-2 text-sm"
             >
               <span className="flex-1">{book.title}</span>
               <input type="hidden" name="book_ids" value={book.id} />
@@ -70,14 +70,14 @@ export default async function NewOrderPage() {
                 type="number"
                 min={0}
                 defaultValue={0}
-                className="w-16 rounded border px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
+                className="w-16 rounded border px-2 py-1"
               />
             </div>
           ))}
         </fieldset>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           Create
         </button>

@@ -64,7 +64,7 @@ export default async function EditOrderPage({
       {lines.length > 0 && (
         <table className="mb-6 w-full max-w-md text-left text-sm">
           <thead>
-            <tr className="border-b dark:border-zinc-800">
+            <tr className="border-b">
               <th className="pb-2 font-medium">Book</th>
               <th className="pb-2 font-medium">Qty</th>
               <th className="pb-2 font-medium">Price</th>
@@ -72,7 +72,7 @@ export default async function EditOrderPage({
           </thead>
           <tbody>
             {lines.map((line, i) => (
-              <tr key={i} className="border-b dark:border-zinc-800">
+              <tr key={i} className="border-b">
                 <td className="py-2">{line.book_title}</td>
                 <td className="py-2">{line.quantity}</td>
                 <td className="py-2 font-mono">
@@ -94,7 +94,7 @@ export default async function EditOrderPage({
             id="status"
             name="status"
             defaultValue={order.status}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           >
             <option value="pending">Pending</option>
             <option value="processing">Processing</option>
@@ -105,7 +105,7 @@ export default async function EditOrderPage({
         </div>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           Update status
         </button>

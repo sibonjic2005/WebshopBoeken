@@ -31,7 +31,7 @@ export default async function BooksPage() {
         <h1 className="text-2xl font-bold">Books</h1>
         <Link
           href="/admin/books/new"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           New book
         </Link>
@@ -42,7 +42,7 @@ export default async function BooksPage() {
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b dark:border-zinc-800">
+            <tr className="border-b">
               <th className="pb-2 font-medium">Title</th>
               <th className="pb-2 font-medium">ISBN</th>
               <th className="pb-2 font-medium">Price</th>
@@ -54,7 +54,7 @@ export default async function BooksPage() {
           </thead>
           <tbody>
             {books.map((book) => (
-              <tr key={book.id} className="border-b dark:border-zinc-800">
+              <tr key={book.id} className="border-b">
                 <td className="py-2">{book.title}</td>
                 <td className="py-2 font-mono text-xs">{book.isbn}</td>
                 <td className="py-2">{formatCurrency(book.price_cents)}</td>
@@ -65,7 +65,7 @@ export default async function BooksPage() {
                   <div className="flex gap-2">
                     <Link
                       href={`/admin/books/${book.id}/edit`}
-                      className="text-blue-600 hover:underline dark:text-blue-400"
+                      className="text-blue-600 hover:underline"
                     >
                       Edit
                     </Link>
@@ -73,7 +73,7 @@ export default async function BooksPage() {
                       <input type="hidden" name="id" value={book.id} />
                       <button
                         type="submit"
-                        className="text-red-600 hover:underline dark:text-red-400"
+                        className="text-red-600 hover:underline"
                       >
                         Delete
                       </button>

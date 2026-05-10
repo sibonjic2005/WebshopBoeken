@@ -27,7 +27,7 @@ export default async function NewBookPage() {
             id="title"
             name="title"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -38,7 +38,7 @@ export default async function NewBookPage() {
             id="isbn"
             name="isbn"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -54,7 +54,7 @@ export default async function NewBookPage() {
             type="number"
             required
             min={0}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -68,7 +68,7 @@ export default async function NewBookPage() {
             required
             min={0}
             defaultValue={0}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -108,7 +108,7 @@ export default async function NewBookPage() {
         </div>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           Create
         </button>

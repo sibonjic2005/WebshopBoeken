@@ -16,7 +16,7 @@ export default function NewUserPage() {
             id="first_name"
             name="first_name"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -30,7 +30,7 @@ export default function NewUserPage() {
             id="last_name"
             name="last_name"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -42,7 +42,7 @@ export default function NewUserPage() {
             name="email"
             type="email"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -54,12 +54,12 @@ export default function NewUserPage() {
             name="password"
             type="password"
             required
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           Create
         </button>

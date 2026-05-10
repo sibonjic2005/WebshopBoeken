@@ -118,17 +118,17 @@ export default function ComboboxInput({
         <input key={s.value} type="hidden" name={name} value={s.value} />
       ))}
 
-      <div className="flex flex-wrap gap-1 rounded-lg border px-2 py-1.5 dark:border-zinc-700 dark:bg-zinc-900">
+      <div className="flex flex-wrap gap-1 rounded-lg border px-2 py-1.5">
         {selected.map((s) => (
           <span
             key={s.value}
-            className="inline-flex items-center gap-1 rounded bg-zinc-200 px-2 py-0.5 text-sm dark:bg-zinc-700"
+            className="inline-flex items-center gap-1 rounded bg-zinc-200 px-2 py-0.5 text-sm"
           >
             {s.label}
             <button
               type="button"
               onClick={() => remove(s.value)}
-              className="text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-200"
+              className="text-zinc-500 hover:text-zinc-800"
             >
               ×
             </button>
@@ -152,7 +152,7 @@ export default function ComboboxInput({
       </div>
 
       {open && items.length > 0 && (
-        <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-800">
+        <ul className="absolute z-10 mt-1 max-h-48 w-full overflow-auto rounded-lg border bg-white shadow-lg">
           {items.map((item, i) => (
             <li
               key={item.type === "create" ? "__create__" : item.option!.value}
@@ -167,7 +167,7 @@ export default function ComboboxInput({
               onMouseEnter={() => setHighlightIndex(i)}
               className={`cursor-pointer px-3 py-2 text-sm ${
                 i === highlightIndex
-                  ? "bg-zinc-100 dark:bg-zinc-700"
+                  ? "bg-zinc-100"
                   : ""
               } ${item.type === "create" ? "italic text-zinc-500" : ""}`}
             >
