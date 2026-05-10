@@ -63,7 +63,7 @@ export default async function EditBookPage({
             name="title"
             required
             defaultValue={book.title}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -75,7 +75,7 @@ export default async function EditBookPage({
             name="isbn"
             required
             defaultValue={book.isbn}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -92,7 +92,7 @@ export default async function EditBookPage({
             required
             min={0}
             defaultValue={book.price_cents}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -106,7 +106,7 @@ export default async function EditBookPage({
             required
             min={0}
             defaultValue={book.stock}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -163,7 +163,7 @@ export default async function EditBookPage({
         </div>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           Save
         </button>

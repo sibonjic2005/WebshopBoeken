@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import { Search, ShoppingBag } from "lucide-react";
 import "./globals.css";
 import { getCart } from "./cart/actions";
 
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Boekenhandel",
-  description: "A bookshop for classics",
+  description: "Een boekwinkel voor klassiekers",
 };
 
 export default async function RootLayout({
@@ -28,29 +29,24 @@ export default async function RootLayout({
   const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <html lang="en">
+    <html lang="nl">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-zinc-50 antialiased dark:bg-zinc-950 dark:text-zinc-50`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white antialiased text-zinc-900`}
       >
-        <header className="border-b bg-white dark:border-zinc-800 dark:bg-zinc-900">
-          <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-            <Link href="/" className="text-lg font-semibold tracking-tight">
+        <header className="border-b border-zinc-200 bg-white">
+          <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-6">
+            <Link href="/" className="text-sm font-medium text-zinc-900">
               Boekenhandel
             </Link>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/admin"
-                className="text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-              >
-                Admin
-              </Link>
-              <Link
-                href="/cart"
-                className="relative inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100"
-              >
-                Cart
+
+            <div className="flex items-center gap-2">
+              <button className="flex h-9 w-9 items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors">
+                <Search size={18} />
+              </button>
+              <Link href="/cart" className="relative flex h-9 w-9 items-center justify-center text-zinc-500 hover:text-zinc-900 transition-colors">
+                <ShoppingBag size={18} />
                 {cartCount > 0 && (
-                  <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-zinc-900 px-1.5 text-xs font-medium text-white dark:bg-zinc-100 dark:text-zinc-900">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-900 text-[10px] font-semibold text-white">
                     {cartCount}
                   </span>
                 )}
@@ -58,7 +54,8 @@ export default async function RootLayout({
             </div>
           </div>
         </header>
-        <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
+
+        <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
       </body>
     </html>
   );

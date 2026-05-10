@@ -15,7 +15,7 @@ export default async function CategoriesPage() {
         <h1 className="text-2xl font-bold">Categories</h1>
         <Link
           href="/admin/categories/new"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           New category
         </Link>
@@ -26,7 +26,7 @@ export default async function CategoriesPage() {
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b dark:border-zinc-800">
+            <tr className="border-b">
               <th className="pb-2 font-medium">Name</th>
               <th className="pb-2 font-medium">Description</th>
               <th className="pb-2 font-medium">Actions</th>
@@ -34,14 +34,14 @@ export default async function CategoriesPage() {
           </thead>
           <tbody>
             {categories.map((cat) => (
-              <tr key={cat.id} className="border-b dark:border-zinc-800">
+              <tr key={cat.id} className="border-b">
                 <td className="py-2">{cat.name}</td>
                 <td className="py-2 text-zinc-500">{cat.description}</td>
                 <td className="py-2">
                   <div className="flex gap-2">
                     <Link
                       href={`/admin/categories/${cat.id}/edit`}
-                      className="text-blue-600 hover:underline dark:text-blue-400"
+                      className="text-blue-600 hover:underline"
                     >
                       Edit
                     </Link>
@@ -49,7 +49,7 @@ export default async function CategoriesPage() {
                       <input type="hidden" name="id" value={cat.id} />
                       <button
                         type="submit"
-                        className="text-red-600 hover:underline dark:text-red-400"
+                        className="text-red-600 hover:underline"
                       >
                         Delete
                       </button>

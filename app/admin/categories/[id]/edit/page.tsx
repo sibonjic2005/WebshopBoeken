@@ -31,7 +31,7 @@ export default async function EditCategoryPage({
             name="name"
             required
             defaultValue={category.name}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <div>
@@ -46,12 +46,12 @@ export default async function EditCategoryPage({
             name="description"
             rows={3}
             defaultValue={category.description ?? ""}
-            className="w-full rounded-lg border px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
+            className="w-full rounded-lg border px-3 py-2"
           />
         </div>
         <button
           type="submit"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           Save
         </button>

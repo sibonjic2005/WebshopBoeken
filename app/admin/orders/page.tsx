@@ -25,7 +25,7 @@ export default async function OrdersPage() {
         <h1 className="text-2xl font-bold">Orders</h1>
         <Link
           href="/admin/orders/new"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
         >
           New order
         </Link>
@@ -36,7 +36,7 @@ export default async function OrdersPage() {
       ) : (
         <table className="w-full text-left text-sm">
           <thead>
-            <tr className="border-b dark:border-zinc-800">
+            <tr className="border-b">
               <th className="pb-2 font-medium">#</th>
               <th className="pb-2 font-medium">Customer</th>
               <th className="pb-2 font-medium">Date</th>
@@ -47,7 +47,7 @@ export default async function OrdersPage() {
           </thead>
           <tbody>
             {orders.map((order) => (
-              <tr key={order.id} className="border-b dark:border-zinc-800">
+              <tr key={order.id} className="border-b">
                 <td className="py-2">{order.id}</td>
                 <td className="py-2">{order.customer_name}</td>
                 <td className="py-2">
@@ -57,7 +57,7 @@ export default async function OrdersPage() {
                   &euro;{parseFloat(order.total_amount).toFixed(2)}
                 </td>
                 <td className="py-2">
-                  <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs dark:bg-zinc-800">
+                  <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs">
                     {order.status}
                   </span>
                 </td>
@@ -65,7 +65,7 @@ export default async function OrdersPage() {
                   <div className="flex gap-2">
                     <Link
                       href={`/admin/orders/${order.id}/edit`}
-                      className="text-blue-600 hover:underline dark:text-blue-400"
+                      className="text-blue-600 hover:underline"
                     >
                       Edit
                     </Link>
@@ -73,7 +73,7 @@ export default async function OrdersPage() {
                       <input type="hidden" name="id" value={order.id} />
                       <button
                         type="submit"
-                        className="text-red-600 hover:underline dark:text-red-400"
+                        className="text-red-600 hover:underline"
                       >
                         Delete
                       </button>
