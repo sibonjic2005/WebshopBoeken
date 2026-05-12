@@ -53,7 +53,7 @@ export async function createUser(formData: FormData) {
 
 
 export async function loginUser(formData: FormData) {
-      const email    = formData.get("email")    as string;
+      const email = formData.get("email") as string;
       const password = formData.get("password") as string;
 
       const result = await query(
@@ -61,11 +61,11 @@ export async function loginUser(formData: FormData) {
         [email]
       );
 
-      if (result.rows.length === 0) {
+      if (result.length === 0) {
             return { error: "Invalid email or password." };
       }
 
-      const customer     = result.rows[0];
+      const customer = result[0];
       const passwordMatch = await bcrypt.compare(password, customer.password_hash);
 
       if (!passwordMatch) {
@@ -97,5 +97,5 @@ export async function getSession() {
         [userId]
       );
 
-      return result.rows[0] ?? null;
+      return result[0] ?? null;
 }
