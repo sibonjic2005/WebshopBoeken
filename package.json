@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "db": "docker compose up -d",
-    "migrate": "docker compose exec db psql -U boekenhandel -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' -f /migrations/001_schema.sql -f /migrations/002_seed.sql",
+    "migrate": "docker compose exec db psql -U boekenhandel -d boekenhandel -f /migrations/001_schema.sql -f /migrations/002_review.sql -f /migrations/003_seed.sql",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -28,6 +28,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "lightningcss": "^1.32.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
