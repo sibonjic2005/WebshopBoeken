@@ -47,11 +47,12 @@ export async function placeOrder(userInfo: FormData, userId: number) {
         );
     }
 
-    // 5. De cart leegmaken na een succesvolle bestelling
+    // 5. De cart leegmaken
     await clearCart(userId);
 
-    // 6. Cache updaten en gebruiker doorsturen
+    // 6. Cache updaten
     revalidatePath("/cart");
-    // Zorg dat deze route bestaat in je app folder
-    redirect(`/order-confirmation?orderId=${orderId}`);
+
+    // 7. Terug sturen naar Homepage
+    redirect('/?success=true');
 }
