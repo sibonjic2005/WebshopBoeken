@@ -25,7 +25,7 @@ export async function createUser(formData: FormData) {
         "SELECT id FROM customer WHERE email = $1",
         [email]
       );
-      if (existing.rows.length > 0) {
+      if (existing.length > 0) {
         return { error: "An account with this email already exists." };
       }
 
@@ -38,7 +38,7 @@ export async function createUser(formData: FormData) {
         [email, passwordHash, firstName, lastName]
       );
 
-      const customerId = result.rows[0].id;
+      const customerId = result[0].id;
 
       //Create session cookie so the user is logged in straight after registering
       (await cookies()).set("session_user_id", String(customerId), {
@@ -99,3 +99,8 @@ export async function getSession() {
 
       return result[0] ?? null;
 }
+
+
+
+
+
