@@ -24,7 +24,6 @@ function SearchModal({ onClose }: SearchModalProps) {
 
   useEffect(() => {
     if (!query.trim()) {
-      setResults([]);
       return;
     }
 
@@ -39,7 +38,10 @@ function SearchModal({ onClose }: SearchModalProps) {
       }
     }, 300);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      setResults([]);
+    };
   }, [query]);
 
   return (
