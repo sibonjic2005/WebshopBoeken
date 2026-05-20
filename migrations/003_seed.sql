@@ -82,3 +82,8 @@ INSERT INTO cart (user_id, book_id, quantity) VALUES
   (3, 7, 3)
 ON CONFLICT DO NOTHING;
 
+SELECT setval(pg_get_serial_sequence('publisher', 'id'), (SELECT MAX(id) FROM publisher));
+SELECT setval(pg_get_serial_sequence('author', 'id'), (SELECT MAX(id) FROM author));
+SELECT setval(pg_get_serial_sequence('category', 'id'), (SELECT MAX(id) FROM category));
+SELECT setval(pg_get_serial_sequence('book', 'id'), (SELECT MAX(id) FROM book));
+SELECT setval(pg_get_serial_sequence('customer', 'id'), (SELECT MAX(id) FROM customer));
