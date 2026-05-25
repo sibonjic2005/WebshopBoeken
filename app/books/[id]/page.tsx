@@ -5,6 +5,7 @@ import { addToCart } from "@/app/cart/actions";
 import { loadBook, loadRecommended } from "@/app/books-actions";
 import type { BookRow } from "@/app/books-shared";
 import { CoverImage } from "@/app/cover-image";
+import { getUserSession } from "@/app/lib/session";
 
 function SmallBookCard({ book }: { book: BookRow }) {
   return (
@@ -40,16 +41,19 @@ export default async function BookPage({
   const bookId = parseInt(id, 10);
   if (isNaN(bookId)) notFound();
 
-  const [book, recommended] = await Promise.all([
+  const [book, recommended, userId] = await Promise.all([
     loadBook(bookId),
     loadRecommended(bookId),
+    getUserSession(),
   ]);
 
   if (!book) notFound();
 
   async function handleAddToCart() {
     "use server";
-    await addToCart(1, bookId, 1);
+    if (userId) {
+      await addToCart(userId, bookId, 1);
+    }
   }
 
   return (
@@ -117,13 +121,22 @@ export default async function BookPage({
           </div>
 
           <form action={handleAddToCart} className="mt-10">
-            <button
-              type="submit"
-              disabled={book.stock === 0}
-              className="w-full rounded-xl bg-zinc-900 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              In winkelwagen
-            </button>
+            {!userId ? (
+              <Link
+                href="/user/login"
+                className="block w-full rounded-xl bg-zinc-900 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-700 text-center"
+              >
+                Login om toe te voegen
+              </Link>
+            ) : (
+              <button
+                type="submit"
+                disabled={book.stock === 0}
+                className="w-full rounded-xl bg-zinc-900 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                In winkelwagen
+              </button>
+            )}
           </form>
         </div>
       </div>

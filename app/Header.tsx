@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingBag, X } from "lucide-react";
+import { Search, ShoppingBag, X, User, LogOut } from "lucide-react";
 import { searchBooks } from "@/app/books/search-actions";
 import type { BookRow } from "@/app/books-shared";
 import { CoverImage } from "@/app/cover-image";
@@ -119,10 +119,12 @@ function SearchModal({ onClose }: SearchModalProps) {
 
 type HeaderProps = {
   cartCount: number;
+  isAuthenticated: boolean;
 };
 
-export function Header({ cartCount }: HeaderProps) {
+export function Header({ cartCount, isAuthenticated }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
@@ -152,6 +154,58 @@ export function Header({ cartCount }: HeaderProps) {
                 </span>
               )}
             </Link>
+
+            <div className="relative">
+              <button
+                onClick={() => setMenuOpen(!menuOpen)}
+                className="flex h-9 w-9 items-center justify-center text-zinc-500 transition-colors hover:text-zinc-900"
+              >
+                <User size={18} />
+              </button>
+
+              {menuOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-lg border border-zinc-200 bg-white shadow-lg z-50">
+                  {isAuthenticated ? (
+                    <>
+                      <Link
+                        href="/user/account"
+                        className="block px-4 py-2 text-sm hover:bg-zinc-50 border-b border-zinc-200"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Mijn Account
+                      </Link>
+                      <form action="/api/auth/logout" method="POST" className="w-full">
+                        <button
+                          type="submit"
+                          className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 flex items-center gap-2 text-red-600"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          <LogOut size={16} />
+                          Afmelden
+                        </button>
+                      </form>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        href="/user/login"
+                        className="block px-4 py-2 text-sm hover:bg-zinc-50 border-b border-zinc-200"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Inloggen
+                      </Link>
+                      <Link
+                        href="/user/register"
+                        className="block px-4 py-2 text-sm hover:bg-zinc-50"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Registreren
+                      </Link>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>

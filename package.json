@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@types/swagger-ui-react": "^5.18.0",
+    "bcryptjs": "^3.0.3",
     "lucide-react": "^1.14.0",
     "next": "16.1.6",
     "pg": "^8.18.0",
