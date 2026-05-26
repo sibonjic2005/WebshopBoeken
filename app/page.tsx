@@ -3,12 +3,14 @@ import { loadBooks, loadCategories, loadFeaturedBooks } from "./books-actions";
 import { BooksList } from "./books-list";
 import { CoverImage } from "./cover-image";
 import ConfirmOrder from "./checkout/ConfirmOrder";
+import { getUserSession } from "./lib/session";
 
 export default async function Home() {
-  const [initialBooks, categories, featuredBooks] = await Promise.all([
+  const [initialBooks, categories, featuredBooks, userId] = await Promise.all([
     loadBooks(0),
     loadCategories(),
     loadFeaturedBooks(),
+    getUserSession(),
   ]);
 
   return (
@@ -61,7 +63,7 @@ export default async function Home() {
         </section>
       )}
 
-      <BooksList initialBooks={initialBooks} categories={categories} />
+      <BooksList initialBooks={initialBooks} categories={categories} userId={userId} />
     </>
   );
 }
