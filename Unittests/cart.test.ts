@@ -7,7 +7,13 @@ let USER_ID: number;
 const BOOK_ID = 1;
 
 // Maak een tijdelijke testgebruiker aan met een id dat nog niet bestaat
+//maar eerst voor zekerheid de oude testgebruiker verwijderen
 beforeAll(async () => {
+
+    await query("DELETE FROM cart WHERE user_id IN (SELECT id FROM customer WHERE email = 'test@gmail.com')");
+    await query("DELETE FROM customer WHERE email = 'test@gmail.com'");
+
+
     const rows = await query<{ id: number }>("INSERT INTO customer (email, password_hash, first_name, last_name) VALUES ('test@gmail.com', 'Testuser', 'Test', 'User') RETURNING id");
     USER_ID = rows[0].id;
 });
