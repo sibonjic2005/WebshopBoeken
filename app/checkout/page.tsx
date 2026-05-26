@@ -2,10 +2,15 @@ import { getCart } from "@/app/cart/actions";
 import { placeOrder } from "@/app/checkout/actions";
 import { formatCurrency } from "@/app/format-currency";
 import { redirect } from "next/navigation";
-
-const userId = 1;
+import { getUserSession } from "@/app/lib/session";
 
 export default async function CheckoutPage() {
+    const userId = await getUserSession();
+
+    if (!userId) {
+        redirect("/user/login");
+    }
+
     const cart = await getCart(userId);
 
     const totalPrice = cart.reduce(
@@ -19,7 +24,7 @@ export default async function CheckoutPage() {
 
     async function handlePlaceOrder(formData: FormData) {
         "use server";
-        await placeOrder(formData, userId);
+        await placeOrder(formData, userId!);
     }
 
     return (
