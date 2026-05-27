@@ -11,7 +11,7 @@ export default function LoginPage() {
     async (prevState: any, formData: FormData) => {
       const result = await loginUser(formData);
       if (result.success) {
-        router.push("/cart");
+        router.push("/");
       }
       return result;
     },
