@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { randomBytes } from "crypto";
+import { cache } from "react";
 import { redirect } from "next/navigation";
 import { query } from "../db";
 import { redis } from "./redis";
@@ -44,7 +45,7 @@ export async function getUserSession(): Promise<number | null> {
   return userId ? parseInt(userId, 10) : null;
 }
 
-export async function getCurrentUser(): Promise<CurrentUser | null> {
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   const userId = await getUserSession();
   if (!userId) return null;
 
@@ -54,7 +55,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   );
 
   return users[0] ?? null;
-}
+});
 
 export async function isCurrentUserAdmin(): Promise<boolean> {
   const user = await getCurrentUser();
@@ -69,6 +70,20 @@ export async function requireAdmin(): Promise<CurrentUser> {
   }
 
   if (user.role !== "admin") {
+    redirect("/");
+  }
+
+  return user;
+}
+
+export async function requireService(): Promise<CurrentUser> {
+  const user = await getCurrentUser();
+
+  if (!user) {
+    redirect("/user/login");
+  }
+
+  if (user.role !== "service" && user.role !== "admin") {
     redirect("/");
   }
 

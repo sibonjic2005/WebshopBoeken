@@ -4,7 +4,7 @@ import { query } from "@/app/db";
 import { requireAdmin } from "@/app/lib/session";
 import { redirect } from "next/navigation";
 
-const roles = ["customer", "admin"] as const;
+const roles = ["customer", "service", "admin"] as const;
 
 type Role = (typeof roles)[number];
 

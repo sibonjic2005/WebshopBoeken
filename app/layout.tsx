@@ -42,6 +42,7 @@ export default async function RootLayout({
           cartCount={cartCount}
           isAuthenticated={!!currentUser}
           isAdmin={currentUser?.role === "admin"}
+          isService={currentUser?.role === "service"}
         />
 
         <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>

@@ -1,6 +1,7 @@
 import { query } from "@/app/db";
 import { createBook } from "../actions";
 import ComboboxInput from "../ComboboxInput";
+import { BackLink } from "@/app/BackLink";
 
 type Publisher = { id: number; name: string };
 type Author = { id: number; first_name: string; last_name: string };
@@ -17,6 +18,7 @@ export default async function NewBookPage() {
 
   return (
     <>
+      <BackLink href="/admin/books" label="Books" />
       <h1 className="mb-6 text-2xl font-bold">New book</h1>
       <form action={createBook} className="max-w-md space-y-4">
         <div>

@@ -1,8 +1,10 @@
 import { createCategory } from "../actions";
+import { BackLink } from "@/app/BackLink";
 
 export default function NewCategoryPage() {
   return (
     <>
+      <BackLink href="/admin/categories" label="Categories" />
       <h1 className="mb-6 text-2xl font-bold">New category</h1>
       <form action={createCategory} className="max-w-md space-y-4">
         <div>

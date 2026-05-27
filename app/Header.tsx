@@ -119,9 +119,10 @@ type HeaderProps = {
   cartCount: number;
   isAuthenticated: boolean;
   isAdmin: boolean;
+  isService: boolean;
 };
 
-export function Header({ cartCount, isAuthenticated, isAdmin }: HeaderProps) {
+export function Header({ cartCount, isAuthenticated, isAdmin, isService }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -182,6 +183,15 @@ export function Header({ cartCount, isAuthenticated, isAdmin }: HeaderProps) {
                           Admin
                         </Link>
                       )}
+                      {isService && (
+                        <Link
+                          href="/service"
+                          className="block px-4 py-2 text-sm hover:bg-zinc-50 border-b border-zinc-200"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Service
+                        </Link>
+                      )}
                       <form
                         action="/api/auth/logout"
                         method="POST"
@@ -190,7 +200,6 @@ export function Header({ cartCount, isAuthenticated, isAdmin }: HeaderProps) {
                         <button
                           type="submit"
                           className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 flex items-center gap-2 text-red-600"
-                          onClick={() => setMenuOpen(false)}
                         >
                           <LogOut size={16} />
                           Afmelden
