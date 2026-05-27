@@ -1,5 +1,6 @@
 import { query } from "@/app/db";
 import { createOrder } from "../actions";
+import { BackLink } from "@/app/BackLink";
 
 type User = { id: number; first_name: string; last_name: string };
 type Book = { id: number; title: string; price_cents: number };
@@ -14,6 +15,7 @@ export default async function NewOrderPage() {
 
   return (
     <>
+      <BackLink href="/admin/orders" label="Orders" />
       <h1 className="mb-6 text-2xl font-bold">New order</h1>
       <form action={createOrder} className="max-w-md space-y-4">
         <div>

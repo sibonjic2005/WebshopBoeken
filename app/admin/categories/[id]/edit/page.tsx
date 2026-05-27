@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { query } from "@/app/db";
 import { updateCategory } from "../../actions";
+import { BackLink } from "@/app/BackLink";
 
 type Category = { id: number; name: string; description: string | null };
 
@@ -19,6 +20,7 @@ export default async function EditCategoryPage({
 
   return (
     <>
+      <BackLink href="/admin/categories" label="Categories" />
       <h1 className="mb-6 text-2xl font-bold">Edit category</h1>
       <form action={updateCategory} className="max-w-md space-y-4">
         <input type="hidden" name="id" value={category.id} />

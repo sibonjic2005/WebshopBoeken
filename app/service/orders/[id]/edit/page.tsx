@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { query } from "@/app/db";
-import { updateOrder } from "../../actions";
+import { updateOrderStatus } from "../../actions";
 import { BackLink } from "@/app/BackLink";
 
 type Order = {
@@ -17,7 +17,7 @@ type OrderLine = {
   price_at_purchase: string;
 };
 
-export default async function EditOrderPage({
+export default async function ServiceEditOrderPage({
   params,
 }: {
   params: Promise<{ id: string }>;
@@ -46,7 +46,7 @@ export default async function EditOrderPage({
 
   return (
     <>
-      <BackLink href="/admin/orders" label="Orders" />
+      <BackLink href="/service/orders" label="Orders" />
       <h1 className="mb-6 text-2xl font-bold">Order #{order.id}</h1>
 
       <div className="mb-6 max-w-md space-y-2 text-sm">
@@ -86,7 +86,7 @@ export default async function EditOrderPage({
         </table>
       )}
 
-      <form action={updateOrder} className="max-w-md space-y-4">
+      <form action={updateOrderStatus} className="max-w-md space-y-4">
         <input type="hidden" name="id" value={order.id} />
         <div>
           <label htmlFor="status" className="mb-1 block text-sm font-medium">
