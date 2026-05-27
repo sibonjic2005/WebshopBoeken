@@ -9,7 +9,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint && next lint",
-    "import-books": "bun run scripts/import-books.ts"
+    "import-books": "bun run scripts/import-books.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@types/swagger-ui-react": "^5.18.0",
@@ -23,14 +26,18 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/jest": "^30.0.0",
     "@types/node": "^20",
     "@types/pg": "^8.16.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "jest": "^30.4.2",
+    "jest-environment-node": "^30.4.1",
     "lightningcss": "^1.32.0",
     "tailwindcss": "^4",
+    "ts-jest": "^29.4.11",
     "typescript": "^5"
   },
   "ignoreScripts": [
