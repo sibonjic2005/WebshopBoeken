@@ -20,10 +20,7 @@ export default function NewUserPage() {
           />
         </div>
         <div>
-          <label
-            htmlFor="last_name"
-            className="mb-1 block text-sm font-medium"
-          >
+          <label htmlFor="last_name" className="mb-1 block text-sm font-medium">
             Last name
           </label>
           <input
@@ -56,6 +53,20 @@ export default function NewUserPage() {
             required
             className="w-full rounded-lg border px-3 py-2"
           />
+        </div>
+        <div>
+          <label htmlFor="role" className="mb-1 block text-sm font-medium">
+            Role
+          </label>
+          <select
+            id="role"
+            name="role"
+            defaultValue="customer"
+            className="w-full rounded-lg border px-3 py-2"
+          >
+            <option value="customer">Customer</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
         <button
           type="submit"

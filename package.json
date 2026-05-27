@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "db": "docker compose up -d",
-    "migrate": "docker compose exec db psql -U boekenhandel -d boekenhandel -f /migrations/001_schema.sql -f /migrations/002_review.sql -f /migrations/003_seed.sql",
+    "migrate": "docker compose exec db psql -U boekenhandel -d boekenhandel -f /migrations/001_schema.sql -f /migrations/002_review.sql -f /migrations/002_customer_role.sql",
+    "migrate:role": "bun run scripts/migrate-role.ts",
+    "migrate:remote": "bun run scripts/migrate-role.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -15,6 +17,7 @@
   "dependencies": {
     "@types/swagger-ui-react": "^5.18.0",
     "bcryptjs": "^3.0.3",
+    "ioredis": "^5.11.0",
     "lucide-react": "^1.14.0",
     "next": "16.1.6",
     "pg": "^8.18.0",

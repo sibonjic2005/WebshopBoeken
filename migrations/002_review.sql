@@ -1,4 +1,4 @@
-CREATE TABLE review (
+CREATE TABLE IF NOT EXISTS review (
     id SERIAL PRIMARY KEY,
     user_id INT NOT NULL REFERENCES customer(id),
     book_id INT NOT NULL REFERENCES book(id),

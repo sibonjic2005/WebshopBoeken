@@ -7,11 +7,12 @@ type User = {
   email: string;
   first_name: string;
   last_name: string;
+  role: string;
 };
 
 export default async function UsersPage() {
   const users = await query<User>(
-    "SELECT id, email, first_name, last_name FROM customer ORDER BY last_name, first_name"
+    "SELECT id, email, first_name, last_name, role FROM customer ORDER BY last_name, first_name",
   );
 
   return (
@@ -34,6 +35,7 @@ export default async function UsersPage() {
             <tr className="border-b">
               <th className="pb-2 font-medium">Name</th>
               <th className="pb-2 font-medium">Email</th>
+              <th className="pb-2 font-medium">Role</th>
               <th className="pb-2 font-medium">Actions</th>
             </tr>
           </thead>
@@ -44,6 +46,7 @@ export default async function UsersPage() {
                   {user.first_name} {user.last_name}
                 </td>
                 <td className="py-2">{user.email}</td>
+                <td className="py-2 capitalize">{user.role}</td>
                 <td className="py-2">
                   <div className="flex gap-2">
                     <Link
