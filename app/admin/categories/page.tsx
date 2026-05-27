@@ -1,16 +1,35 @@
 import Link from "next/link";
 import { query } from "@/app/db";
 import { deleteCategory } from "./actions";
+import { Pagination } from "../Pagination";
+import { BackLink } from "@/app/BackLink";
+
+const PAGE_SIZE = 20;
 
 type Category = { id: number; name: string; description: string | null };
 
-export default async function CategoriesPage() {
-  const categories = await query<Category>(
-    "SELECT id, name, description FROM category ORDER BY name"
-  );
+export default async function CategoriesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
+  const { page: pageParam } = await searchParams;
+  const page = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+  const offset = (page - 1) * PAGE_SIZE;
+
+  const [categories, countResult] = await Promise.all([
+    query<Category>(
+      "SELECT id, name, description FROM category ORDER BY name LIMIT $1 OFFSET $2",
+      [PAGE_SIZE, offset],
+    ),
+    query<{ total: string }>("SELECT COUNT(*) AS total FROM category"),
+  ]);
+
+  const totalPages = Math.ceil(parseInt(countResult[0].total, 10) / PAGE_SIZE);
 
   return (
     <>
+      <BackLink href="/admin" label="Admin" />
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold">Categories</h1>
         <Link
@@ -24,42 +43,45 @@ export default async function CategoriesPage() {
       {categories.length === 0 ? (
         <p className="text-zinc-500">No categories yet.</p>
       ) : (
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-b">
-              <th className="pb-2 font-medium">Name</th>
-              <th className="pb-2 font-medium">Description</th>
-              <th className="pb-2 font-medium">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {categories.map((cat) => (
-              <tr key={cat.id} className="border-b">
-                <td className="py-2">{cat.name}</td>
-                <td className="py-2 text-zinc-500">{cat.description}</td>
-                <td className="py-2">
-                  <div className="flex gap-2">
-                    <Link
-                      href={`/admin/categories/${cat.id}/edit`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      Edit
-                    </Link>
-                    <form action={deleteCategory}>
-                      <input type="hidden" name="id" value={cat.id} />
-                      <button
-                        type="submit"
-                        className="text-red-600 hover:underline"
-                      >
-                        Delete
-                      </button>
-                    </form>
-                  </div>
-                </td>
+        <>
+          <table className="w-full text-left text-sm">
+            <thead>
+              <tr className="border-b">
+                <th className="pb-2 font-medium">Name</th>
+                <th className="pb-2 font-medium">Description</th>
+                <th className="pb-2 font-medium">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {categories.map((cat) => (
+                <tr key={cat.id} className="border-b">
+                  <td className="py-2">{cat.name}</td>
+                  <td className="py-2 text-zinc-500">{cat.description}</td>
+                  <td className="py-2">
+                    <div className="flex gap-2">
+                      <Link
+                        href={`/admin/categories/${cat.id}/edit`}
+                        className="text-blue-600 hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <form action={deleteCategory}>
+                        <input type="hidden" name="id" value={cat.id} />
+                        <button
+                          type="submit"
+                          className="text-red-600 hover:underline"
+                        >
+                          Delete
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination page={page} totalPages={totalPages} basePath="/admin/categories" />
+        </>
       )}
     </>
   );

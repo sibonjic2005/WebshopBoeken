@@ -1,9 +1,12 @@
 "use server";
 
 import { query } from "@/app/db";
+import { requireAdmin } from "@/app/lib/session";
 import { redirect } from "next/navigation";
 
 export async function createCategory(formData: FormData) {
+  await requireAdmin();
+
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
   await query("INSERT INTO category (name, description) VALUES ($1, $2)", [
@@ -14,6 +17,8 @@ export async function createCategory(formData: FormData) {
 }
 
 export async function updateCategory(formData: FormData) {
+  await requireAdmin();
+
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
   const description = formData.get("description") as string;
@@ -26,6 +31,8 @@ export async function updateCategory(formData: FormData) {
 }
 
 export async function deleteCategory(formData: FormData) {
+  await requireAdmin();
+
   const id = formData.get("id") as string;
   await query("DELETE FROM category WHERE id = $1", [id]);
   redirect("/admin/categories");

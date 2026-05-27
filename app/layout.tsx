@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "./Header";
 import { getCart } from "./cart/actions";
-import { getUserSession } from "./lib/session";
+import { getCurrentUser } from "./lib/session";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,11 +25,11 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const userId = await getUserSession();
+  const currentUser = await getCurrentUser();
   let cartCount = 0;
 
-  if (userId) {
-    const cart = await getCart(userId);
+  if (currentUser) {
+    const cart = await getCart(currentUser.id);
     cartCount = cart.reduce((sum, item) => sum + item.quantity, 0);
   }
 
@@ -38,7 +38,12 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-white antialiased text-zinc-900`}
       >
-        <Header cartCount={cartCount} isAuthenticated={!!userId} />
+        <Header
+          cartCount={cartCount}
+          isAuthenticated={!!currentUser}
+          isAdmin={currentUser?.role === "admin"}
+          isService={currentUser?.role === "service"}
+        />
 
         <main className="mx-auto max-w-6xl px-6 py-8">{children}</main>
       </body>

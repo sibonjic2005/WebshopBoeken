@@ -61,17 +61,20 @@ INSERT INTO book_category (book_id, category_id) VALUES
   (9, 7)
 ON CONFLICT DO NOTHING;
 
-INSERT INTO customer (id, email, password_hash, first_name, last_name) VALUES
-  (1,  'alice.jansen@example.com',   'hashed_pw_1',  'Alice',   'Jansen'),
-  (2,  'bob.devries@example.com',    'hashed_pw_2',  'Bob',     'de Vries'),
-  (3,  'carla.smit@example.com',     'hashed_pw_3',  'Carla',   'Smit'),
-  (4,  'david.bakker@example.com',   'hashed_pw_4',  'David',   'Bakker'),
-  (5,  'emma.visser@example.com',    'hashed_pw_5',  'Emma',    'Visser'),
-  (6,  'finn.meijer@example.com',    'hashed_pw_6',  'Finn',    'Meijer'),
-  (7,  'lisa.mulder@example.com',    'hashed_pw_7',  'Lisa',    'Mulder'),
-  (8,  'milan.dejong@example.com',   'hashed_pw_8',  'Milan',   'de Jong'),
-  (9,  'noa.kok@example.com',        'hashed_pw_9',  'Noa',     'Kok'),
-  (10, 'oliver.jacobs@example.com',  'hashed_pw_10', 'Oliver',  'Jacobs')
+INSERT INTO customer (id, email, password_hash, first_name, last_name, role) VALUES
+  -- admin@example.com / password123
+  (1,  'admin@example.com',          '$2b$10$5HuP/mXJhJoTWU9y33BgZeTPDkU9Cd.8dhdrkAZRmfdYxx/KAtys.', 'Alice',   'Jansen',   'admin'),
+  -- service@example.com / password123
+  (2,  'service@example.com',        '$2b$10$5HuP/mXJhJoTWU9y33BgZeTPDkU9Cd.8dhdrkAZRmfdYxx/KAtys.', 'Sam',     'Service',  'service'),
+  (3,  'bob.devries@example.com',    'hashed_pw_2',  'Bob',     'de Vries', 'customer'),
+  (4,  'carla.smit@example.com',     'hashed_pw_3',  'Carla',   'Smit',     'customer'),
+  (5,  'david.bakker@example.com',   'hashed_pw_4',  'David',   'Bakker',   'customer'),
+  (6,  'emma.visser@example.com',    'hashed_pw_5',  'Emma',    'Visser',   'customer'),
+  (7,  'finn.meijer@example.com',    'hashed_pw_6',  'Finn',    'Meijer',   'customer'),
+  (8,  'lisa.mulder@example.com',    'hashed_pw_7',  'Lisa',    'Mulder',   'customer'),
+  (9,  'milan.dejong@example.com',   'hashed_pw_8',  'Milan',   'de Jong',  'customer'),
+  (10, 'noa.kok@example.com',        'hashed_pw_9',  'Noa',     'Kok',      'customer'),
+  (11, 'oliver.jacobs@example.com',  'hashed_pw_10', 'Oliver',  'Jacobs',   'customer')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO cart (user_id, book_id, quantity) VALUES
@@ -81,4 +84,3 @@ INSERT INTO cart (user_id, book_id, quantity) VALUES
   (2, 9, 1),
   (3, 7, 3)
 ON CONFLICT DO NOTHING;
-

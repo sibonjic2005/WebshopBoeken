@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { query } from "@/app/db";
 import { updateBook } from "../../actions";
 import ComboboxInput from "../../ComboboxInput";
+import { BackLink } from "@/app/BackLink";
 
 type Book = {
   id: number;
@@ -51,6 +52,7 @@ export default async function EditBookPage({
 
   return (
     <>
+      <BackLink href="/admin/books" label="Books" />
       <h1 className="mb-6 text-2xl font-bold">Edit book</h1>
       <form action={updateBook} className="max-w-md space-y-4">
         <input type="hidden" name="id" value={book.id} />
