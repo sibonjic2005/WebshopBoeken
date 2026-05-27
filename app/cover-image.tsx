@@ -14,9 +14,22 @@ const COVER_PALETTES: [string, string][] = [
   ["#f0d4e8", "#c84a8a"],
 ];
 
-function coverSrc(isbn: string, attempt: number, size: "S" | "M" | "L") {
-  if (attempt === 0)
-    return `https://covers.openlibrary.org/b/isbn/${isbn.replace(/-/g, "")}-${size}.jpg`;
+function isbn13to10(isbn13: string): string | null {
+  if (isbn13.length !== 13 || !isbn13.startsWith("978")) return null;
+  const core = isbn13.slice(3, 12);
+  let sum = 0;
+  for (let i = 0; i < 9; i++) sum += parseInt(core[i], 10) * (10 - i);
+  const check = (11 - (sum % 11)) % 11;
+  return core + (check === 10 ? "X" : String(check));
+}
+
+function coverSrc(isbn: string, attempt: number, size: "S" | "M" | "L"): string | null {
+  if (attempt === 0) return `https://covers.openlibrary.org/b/isbn/${isbn}-${size}.jpg`;
+  if (attempt === 1) {
+    const isbn10 = isbn.length === 10 ? isbn : isbn13to10(isbn);
+    if (!isbn10) return null;
+    return `https://images.amazon.com/images/P/${isbn10}.01.L.jpg`;
+  }
   return null;
 }
 
@@ -33,7 +46,8 @@ export function CoverImage({
 }) {
   const [attempt, setAttempt] = useState(0);
   const [bg, text] = COVER_PALETTES[id % COVER_PALETTES.length];
-  const src = isbn ? coverSrc(isbn, attempt, size) : null;
+  const cleanIsbn = isbn?.replace(/-/g, "");
+  const src = cleanIsbn ? coverSrc(cleanIsbn, attempt, size) : null;
 
   if (!src) {
     return (

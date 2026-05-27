@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "db": "docker compose up -d",
-    "migrate": "docker compose exec db psql -U boekenhandel -d boekenhandel -f /migrations/001_schema.sql -f /migrations/002_review.sql -f /migrations/002_customer_role.sql",
-    "migrate:role": "bun run scripts/migrate-role.ts",
-    "migrate:remote": "bun run scripts/migrate-role.ts",
+    "migrate": "DATABASE_URL=postgresql://boekenhandel:boekenhandel@localhost:5434/boekenhandel bun run scripts/migrate.ts",
+    "migrate:remote": "bun run scripts/migrate.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
