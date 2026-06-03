@@ -11,6 +11,7 @@ const BOOK_ID = 1;
 // Maak een tijdelijke testgebruiker aan met een id dat nog niet bestaat
 // maar eerst voor zekerheid de oude testgebruiker verwijderen
 beforeAll(async () => {
+    await query("DELETE FROM order_line WHERE order_id IN (SELECT id FROM shop_order WHERE user_id IN (SELECT id FROM customer WHERE email = 'checkout-test@gmail.com'))");
     await query("DELETE FROM shop_order WHERE user_id IN (SELECT id FROM customer WHERE email = 'checkout-test@gmail.com')");
     await query("DELETE FROM cart WHERE user_id IN (SELECT id FROM customer WHERE email = 'checkout-test@gmail.com')");
     await query("DELETE FROM customer WHERE email = 'checkout-test@gmail.com'");
@@ -21,6 +22,7 @@ beforeAll(async () => {
 
 // Verwijder de testgebruiker, zijn bestellingen en cart na alle tests
 afterAll(async () => {
+    await query("DELETE FROM order_line WHERE order_id IN (SELECT id FROM shop_order WHERE user_id = $1)", [USER_ID]);
     await query("DELETE FROM shop_order WHERE user_id = $1", [USER_ID]);
     await query("DELETE FROM cart WHERE user_id = $1", [USER_ID]);
     await query("DELETE FROM customer WHERE id = $1", [USER_ID]);
@@ -82,7 +84,7 @@ test("de order is correct opgeslagen in de database", async () => {
 
     expect(orders.length).toBe(1);
     expect(orders[0].status).toBe("completed");
-    expect(orders[0].total_amount).toBeGreaterThan(0);
+    expect(Number(orders[0].total_amount)).toBeGreaterThan(0);
 
     // Controleer dat de order_lines aangemaakt zijn
     const orderLines = await query<{ book_id: number; quantity: number }>(
