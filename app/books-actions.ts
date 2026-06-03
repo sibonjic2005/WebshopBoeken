@@ -68,7 +68,7 @@ const POPULAR_ISBNS = [
   "9781451673318", // Fahrenheit 451 (S&S)
   "9780684801223", // The Old Man and the Sea (Scribner)
   "9782070612758", // Le Petit Prince (Gallimard)
-  "9781476753978", // Salt, Fat, Acid, Heat
+  "9781476753836", // Salt, Fat, Acid, Heat
   "9780735619678", // Code Complete 2
   // Additional popular editions
   "9780451524935", // Nineteen Eighty-Four (Signet)

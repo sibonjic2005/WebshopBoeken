@@ -16,6 +16,8 @@ try {
     "migrations/001_schema.sql",
     "migrations/002_review.sql",
     "migrations/002_customer_role.sql",
+    "migrations/003_seed.sql",
+    "migrations/004_fix_sequence.sql",
   ]) {
     const sql = await readFile(file, "utf-8");
     await pool.query(sql);

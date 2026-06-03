@@ -40,7 +40,7 @@ INSERT INTO book (id, title, isbn, price_cents, stock, publisher_id) VALUES
   (5,  'Fahrenheit 451',             '978-1-4516-7331-8', 1095, 20, 6),
   (6,  'The Old Man and the Sea',    '978-0-684-80122-3',  895, 25, 1),
   (7,  'Le Petit Prince',            '978-2-07-061275-8',  895, 28, 7),
-  (8,  'Salt, Fat, Acid, Heat',      '978-1-4767-5397-8', 2495, 16, 8),
+  (8,  'Salt, Fat, Acid, Heat',      '978-1-4767-5383-6', 2495, 16, 8),
   (9,  'Code Complete 2',            '978-0-7356-1967-8', 3995,  8, 9)
 ON CONFLICT DO NOTHING;
 
