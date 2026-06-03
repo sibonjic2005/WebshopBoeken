@@ -1,56 +1,95 @@
-jest.mock("next/cache", () => ({ revalidatePath: jest.fn() }));
+import { jest, describe, it, expect, beforeEach } from "@jest/globals";
 
-import { addToCart, getCart, removeFromCart, updateCartQuantity, clearCart } from "@/app/cart/actions";
+import { revalidatePath } from "next/cache";
 import { query } from "@/app/db";
+import {
+  addToCart,
+  getCart,
+  removeFromCart,
+  updateCartQuantity,
+  clearCart,
+} from "@/app/cart/actions";
 
-let USER_ID: number;
+jest.mock("next/cache", () => ({ revalidatePath: jest.fn() }));
+jest.mock("@/app/db", () => ({ query: jest.fn() }));
+
+const queryMock = query as jest.MockedFunction<
+  (sql: string, params?: unknown[]) => Promise<unknown[]>
+>;
+
+function lastQueryCall(): [string, unknown[] | undefined] {
+  const call = queryMock.mock.calls.at(-1);
+  expect(call).toBeDefined();
+  return call as [string, unknown[] | undefined];
+}
+
+const USER_ID = 42;
 const BOOK_ID = 1;
 
-// Maak een tijdelijke testgebruiker aan met een id dat nog niet bestaat
-//maar eerst voor zekerheid de oude testgebruiker verwijderen
-beforeAll(async () => {
+describe("cart actions", () => {
+  beforeEach(() => {
+    queryMock.mockReset();
+    queryMock.mockResolvedValue([]);
+  });
 
-    await query("DELETE FROM cart WHERE user_id IN (SELECT id FROM customer WHERE email = 'test@gmail.com')");
-    await query("DELETE FROM customer WHERE email = 'test@gmail.com'");
+  it("getCart returns the rows the database yields", async () => {
+    const rows = [{ bookId: BOOK_ID, title: "1984", price_cents: 1299, quantity: 2 }];
+    queryMock.mockResolvedValue(rows);
 
+    await expect(getCart(USER_ID)).resolves.toBe(rows);
 
-    const rows = await query<{ id: number }>("INSERT INTO customer (email, password_hash, first_name, last_name) VALUES ('test@gmail.com', 'Testuser', 'Test', 'User') RETURNING id");
-    USER_ID = rows[0].id;
-});
+    const [sql, params] = lastQueryCall();
+    expect(sql).toContain("FROM cart c");
+    expect(sql).toContain("JOIN book b ON c.book_id = b.id");
+    expect(sql).toContain("WHERE c.user_id = $1");
+    expect(params).toEqual([USER_ID]);
+  });
 
-// Verwijder de testgebruiker en zijn cart na alle tests
-afterAll(async () => {
-    await query("DELETE FROM cart WHERE user_id = $1", [USER_ID]);
-    await query("DELETE FROM customer WHERE id = $1", [USER_ID]);
-});
+  it("addToCart inserts and increments on conflict", async () => {
+    await addToCart(USER_ID, BOOK_ID, 3);
 
-test("Kijken of de cart wel leeg is wanneer we beginnen", async () => {
-    const cart = await getCart(USER_ID);
-    expect(cart).toEqual([]);
-});
+    const [sql, params] = lastQueryCall();
+    expect(sql).toContain("INSERT INTO cart (user_id, book_id, quantity)");
+    expect(sql).toContain("ON CONFLICT (user_id, book_id)");
+    expect(sql).toContain("DO UPDATE SET quantity = cart.quantity + $3");
+    expect(params).toEqual([USER_ID, BOOK_ID, 3]);
+    expect(revalidatePath).toHaveBeenCalledWith("/cart");
+  });
 
-test("een boek aan de cart toevoegen", async () => {
-    await addToCart(USER_ID, BOOK_ID, 1);
-    const cart = await getCart(USER_ID);
-    expect(cart[0].quantity).toBe(1);
-});
+  it("addToCart defaults the quantity to 1", async () => {
+    await addToCart(USER_ID, BOOK_ID);
+    expect(lastQueryCall()[1]).toEqual([USER_ID, BOOK_ID, 1]);
+  });
 
-test("wanneer zelfde boek nog een keer wordt gevoegd, gaat de quantity ook omhoog", async () => {
-    await addToCart(USER_ID, BOOK_ID, 2);
-    const cart = await getCart(USER_ID);
-    expect(cart[0].quantity).toBe(3);
-});
-
-test("quantity aanpassen", async () => {
+  it("updateCartQuantity updates the quantity when positive", async () => {
     await updateCartQuantity(USER_ID, BOOK_ID, 5);
-    const cart = await getCart(USER_ID);
-    expect(cart[0].quantity).toBe(5);
-});
 
-test("boek verwijderen uit cart", async () => {
+    const [sql, params] = lastQueryCall();
+    expect(sql).toContain("UPDATE cart SET quantity = $1 WHERE user_id = $2 AND book_id = $3");
+    expect(params).toEqual([5, USER_ID, BOOK_ID]);
+  });
+
+  it("updateCartQuantity removes the item when quantity drops to zero or below", async () => {
+    await updateCartQuantity(USER_ID, BOOK_ID, 0);
+
+    const [sql, params] = lastQueryCall();
+    expect(sql).toContain("DELETE FROM cart WHERE user_id = $1 AND book_id = $2");
+    expect(params).toEqual([USER_ID, BOOK_ID]);
+  });
+
+  it("removeFromCart deletes the single cart line", async () => {
     await removeFromCart(USER_ID, BOOK_ID);
-    const cart = await getCart(USER_ID);
-    expect(cart).toEqual([]);
+
+    const [sql, params] = lastQueryCall();
+    expect(sql).toContain("DELETE FROM cart WHERE user_id = $1 AND book_id = $2");
+    expect(params).toEqual([USER_ID, BOOK_ID]);
+  });
+
+  it("clearCart deletes every line for the user", async () => {
+    await clearCart(USER_ID);
+
+    const [sql, params] = lastQueryCall();
+    expect(sql).toContain("DELETE FROM cart WHERE user_id = $1");
+    expect(params).toEqual([USER_ID]);
+  });
 });
-
-
