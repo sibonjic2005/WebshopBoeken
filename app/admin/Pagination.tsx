@@ -9,11 +9,15 @@ type Props = {
 export function Pagination({ page, totalPages, basePath }: Props) {
   if (totalPages <= 1) return null;
 
+  // Extract existing query params from basePath
+  const hasParams = basePath.includes("?");
+  const paramsSeparator = hasParams ? "&" : "?";
+
   return (
     <div className="mt-6 flex items-center gap-2 text-sm">
       {page > 1 ? (
         <Link
-          href={`${basePath}?page=${page - 1}`}
+          href={`${basePath}${paramsSeparator}page=${page - 1}`}
           className="rounded border px-3 py-1 hover:bg-zinc-50"
         >
           ← Vorige
@@ -28,7 +32,7 @@ export function Pagination({ page, totalPages, basePath }: Props) {
 
       {page < totalPages ? (
         <Link
-          href={`${basePath}?page=${page + 1}`}
+          href={`${basePath}${paramsSeparator}page=${page + 1}`}
           className="rounded border px-3 py-1 hover:bg-zinc-50"
         >
           Volgende →
