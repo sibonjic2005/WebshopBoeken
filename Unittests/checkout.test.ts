@@ -5,6 +5,7 @@ import { placeOrder } from "@/app/checkout/actions";
 import { addToCart, clearCart, getCart } from "@/app/cart/actions";
 import { query } from "@/app/db";
 
+
 let USER_ID: number;
 const BOOK_ID = 1;
 
