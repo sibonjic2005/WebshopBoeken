@@ -11,7 +11,10 @@
     "start": "next start",
     "test": "jest",
     "lint": "eslint && next lint",
-    "import-books": "bun run scripts/import-books.ts"
+    "import-books": "bun run scripts/import-books.ts",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "@types/swagger-ui-react": "^5.18.0",
@@ -34,6 +37,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "jest": "^30.4.2",
+    "jest-environment-node": "^30.4.1",
     "lightningcss": "^1.32.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.11",
