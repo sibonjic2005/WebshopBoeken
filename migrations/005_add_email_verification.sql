@@ -1,0 +1,1 @@
+ALTER TABLE customer ADD COLUMN email_verified BOOLEAN DEFAULT FALSE;

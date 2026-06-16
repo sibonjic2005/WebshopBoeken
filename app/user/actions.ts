@@ -2,6 +2,12 @@
 
 import { query } from "@/app/db";
 import { setUserSession, clearUserSession } from "@/app/lib/session";
+import {
+  storeVerificationCode,
+  sendVerificationEmail,
+  verifyToken,
+  deleteVerificationToken,
+} from "@/app/lib/email-verification";
 import { redirect } from "next/navigation";
 import bcryptjs from "bcryptjs";
 
@@ -75,16 +81,25 @@ export async function registerUser(
 
     // Create user
     const result = await query<{ id: number }>(
-      `INSERT INTO customer (email, password_hash, first_name, last_name)
-       VALUES ($1, $2, $3, $4)
+      `INSERT INTO customer (email, password_hash, first_name, last_name, email_verified)
+       VALUES ($1, $2, $3, $4, false)
        RETURNING id`,
       [email, hashedPassword, firstName, lastName]
     );
 
     const userId = result[0].id;
 
-    // Set session
-    await setUserSession(userId);
+    // Generate verification token and send email
+    try {
+      const token = storeVerificationCode(email);
+      const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/user/verify-email?token=${token}`;
+
+      await sendVerificationEmail(email, verificationUrl);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      // Don't fail registration if email sending fails
+      // User can resend later
+    }
 
     return { success: true };
   } catch (error) {
@@ -121,7 +136,11 @@ export async function loginUser(
     const users = await query<{
       id: number;
       password_hash: string;
-    }>("SELECT id, password_hash FROM customer WHERE email = $1", [email]);
+      email_verified: boolean;
+    }>(
+      "SELECT id, password_hash, email_verified FROM customer WHERE email = $1",
+      [email]
+    );
 
     if (users.length === 0) {
       return {
@@ -142,6 +161,19 @@ export async function loginUser(
       };
     }
 
+    // Check if email is verified
+    if (!user.email_verified) {
+      return {
+        success: false,
+        errors: [
+          {
+            message:
+              "Please verify your email first. Check your inbox for the verification link.",
+          },
+        ],
+      };
+    }
+
     // Set session
     await setUserSession(user.id);
 
@@ -151,6 +183,93 @@ export async function loginUser(
     return {
       success: false,
       errors: [{ message: "Er is een fout opgetreden bij het inloggen" }],
+    };
+  }
+}
+
+// Resend verification email
+export async function resendVerificationEmail(
+  email: string
+): Promise<{ success: boolean; errors?: AuthError[] }> {
+  try {
+    // Find user by email
+    const users = await query<{
+      id: number;
+      email_verified: boolean;
+    }>("SELECT id, email_verified FROM customer WHERE email = $1", [email]);
+
+    if (users.length === 0) {
+      return {
+        success: false,
+        errors: [{ message: "User not found" }],
+      };
+    }
+
+    if (users[0].email_verified) {
+      return {
+        success: false,
+        errors: [{ message: "Email is already verified" }],
+      };
+    }
+
+    // Generate new verification token and send email
+    try {
+      const token = storeVerificationCode(email);
+      const verificationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/user/verify-email?token=${token}`;
+
+      await sendVerificationEmail(email, verificationUrl);
+    } catch (emailError) {
+      console.error("Failed to send verification email:", emailError);
+      return {
+        success: false,
+        errors: [{ message: "Failed to send verification email" }],
+      };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error("Resend verification error:", error);
+    return {
+      success: false,
+      errors: [{ message: "An error occurred" }],
+    };
+  }
+}
+
+// Verify email token
+export async function verifyEmailToken(token: string) {
+  try {
+    // Verify the token
+    const email = verifyToken(token);
+    if (!email) {
+      return {
+        success: false,
+        error: "Verification link is invalid or has expired",
+      };
+    }
+
+    // Update user's email_verified status
+    const result = await query(
+      "UPDATE customer SET email_verified = true WHERE email = $1 RETURNING id",
+      [email]
+    );
+
+    if (result.length === 0) {
+      return {
+        success: false,
+        error: "User not found",
+      };
+    }
+
+    // Clean up the used token
+    deleteVerificationToken(token);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Email verification error:", error);
+    return {
+      success: false,
+      error: "An error occurred during verification",
     };
   }
 }

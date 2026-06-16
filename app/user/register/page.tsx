@@ -11,7 +11,7 @@ export default function RegisterPage() {
     async (prevState: any, formData: FormData) => {
       const result = await registerUser(formData);
       if (result.success) {
-        router.push("/cart");
+        router.push("/user/verify-email-sent");
       }
       return result;
     },

@@ -12,11 +12,11 @@
     "test": "jest",
     "lint": "eslint && next lint",
     "import-books": "bun run scripts/import-books.ts",
-    "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {
+    "@emailjs/nodejs": "^5.0.2",
     "@types/swagger-ui-react": "^5.18.0",
     "bcryptjs": "^3.0.3",
     "ioredis": "^5.11.0",

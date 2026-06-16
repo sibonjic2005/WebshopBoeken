@@ -1,3 +1,5 @@
+jest.mock("ioredis");
+
 import { registerUser, loginUser, logoutUser } from "@/app/user/actions";
 import { query } from "@/app/db";
 import { setUserSession, clearUserSession } from "@/app/lib/session";
@@ -8,6 +10,7 @@ jest.mock("@/app/db");
 jest.mock("@/app/lib/session");
 jest.mock("bcryptjs");
 jest.mock("next/navigation");
+jest.mock("@/app/lib/email-verification");
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -31,7 +34,6 @@ test("registerUser should successfully register a user", async () => {
   const result = await registerUser(formData);
 
   expect(result.success).toBe(true);
-  expect(setUserSession).toHaveBeenCalledWith(1);
 });
 
 // registerUser - sad flow
@@ -82,6 +84,7 @@ test("loginUser should successfully login a user", async () => {
     {
       id: 1,
       password_hash: "hashedPassword",
+      email_verified: true,
     },
   ]);
   (bcryptjs.compare as jest.Mock).mockResolvedValueOnce(true);
@@ -114,6 +117,7 @@ test("loginUser should fail if password is incorrect", async () => {
     {
       id: 1,
       password_hash: "hashedPassword",
+      email_verified: true,
     },
   ]);
   (bcryptjs.compare as jest.Mock).mockResolvedValueOnce(false);

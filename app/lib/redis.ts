@@ -11,5 +11,18 @@ function createClient() {
   return new Redis(url);
 }
 
-export const redis = globalThis.__redis ?? createClient();
-if (process.env.NODE_ENV !== "production") globalThis.__redis = redis;
+let _redis: Redis | undefined;
+
+export function getRedis() {
+  if (!_redis) {
+    _redis = globalThis.__redis ?? createClient();
+    if (process.env.NODE_ENV !== "production") globalThis.__redis = _redis;
+  }
+  return _redis;
+}
+
+export const redis = new Proxy({} as Redis, {
+  get(target, prop) {
+    return getRedis()[prop as keyof Redis];
+  },
+});
