@@ -77,9 +77,7 @@ function SearchModal({ onClose }: SearchModalProps) {
               {loading ? (
                 <p className="text-sm text-zinc-500">Zoeken...</p>
               ) : results.length === 0 ? (
-                <p className="text-sm text-zinc-500">
-                  Geen boeken gevonden.
-                </p>
+                <p className="text-sm text-zinc-500">Geen boeken gevonden.</p>
               ) : (
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6">
                   {results.map((book) => (
@@ -120,9 +118,11 @@ function SearchModal({ onClose }: SearchModalProps) {
 type HeaderProps = {
   cartCount: number;
   isAuthenticated: boolean;
+  isAdmin: boolean;
+  isService: boolean;
 };
 
-export function Header({ cartCount, isAuthenticated }: HeaderProps) {
+export function Header({ cartCount, isAuthenticated, isAdmin, isService }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -174,11 +174,32 @@ export function Header({ cartCount, isAuthenticated }: HeaderProps) {
                       >
                         Mijn Account
                       </Link>
-                      <form action="/api/auth/logout" method="POST" className="w-full">
+                      {isAdmin && (
+                        <Link
+                          href="/admin"
+                          className="block px-4 py-2 text-sm hover:bg-zinc-50 border-b border-zinc-200"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Admin
+                        </Link>
+                      )}
+                      {isService && (
+                        <Link
+                          href="/service"
+                          className="block px-4 py-2 text-sm hover:bg-zinc-50 border-b border-zinc-200"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Service
+                        </Link>
+                      )}
+                      <form
+                        action="/api/auth/logout"
+                        method="POST"
+                        className="w-full"
+                      >
                         <button
                           type="submit"
                           className="w-full text-left px-4 py-2 text-sm hover:bg-zinc-50 flex items-center gap-2 text-red-600"
-                          onClick={() => setMenuOpen(false)}
                         >
                           <LogOut size={16} />
                           Afmelden
@@ -210,9 +231,7 @@ export function Header({ cartCount, isAuthenticated }: HeaderProps) {
         </div>
       </header>
 
-      {searchOpen && (
-        <SearchModal onClose={() => setSearchOpen(false)} />
-      )}
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
     </>
   );
 }

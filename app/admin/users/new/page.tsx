@@ -1,8 +1,10 @@
 import { createUser } from "../actions";
+import { BackLink } from "@/app/BackLink";
 
 export default function NewUserPage() {
   return (
     <>
+      <BackLink href="/admin/users" label="Users" />
       <h1 className="mb-6 text-2xl font-bold">New user</h1>
       <form action={createUser} className="max-w-md space-y-4">
         <div>
@@ -20,10 +22,7 @@ export default function NewUserPage() {
           />
         </div>
         <div>
-          <label
-            htmlFor="last_name"
-            className="mb-1 block text-sm font-medium"
-          >
+          <label htmlFor="last_name" className="mb-1 block text-sm font-medium">
             Last name
           </label>
           <input
@@ -56,6 +55,21 @@ export default function NewUserPage() {
             required
             className="w-full rounded-lg border px-3 py-2"
           />
+        </div>
+        <div>
+          <label htmlFor="role" className="mb-1 block text-sm font-medium">
+            Role
+          </label>
+          <select
+            id="role"
+            name="role"
+            defaultValue="customer"
+            className="w-full rounded-lg border px-3 py-2"
+          >
+            <option value="customer">Customer</option>
+            <option value="service">Service</option>
+            <option value="admin">Admin</option>
+          </select>
         </div>
         <button
           type="submit"

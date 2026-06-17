@@ -12,5 +12,11 @@ services:
       - pgdata:/var/lib/postgresql/data
       - ./migrations:/migrations
 
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
 volumes:
   pgdata:

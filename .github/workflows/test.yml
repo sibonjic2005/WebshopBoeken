@@ -1,0 +1,84 @@
+# name: Test
+
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v4
+
+#       - uses: oven-sh/setup-bun@v2
+#         with:
+#           bun-version: latest
+
+#       - name: Install dependencies
+#         run: bun install
+
+#       - name: Run tests
+#         run: bun run test
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: bookstore
+          POSTGRES_PASSWORD: bookstore123
+          POSTGRES_DB: boekenwebshop
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      # NIEUW: Dit voert alle SQL-bestanden uit je migrations map uit op de test-database
+      # Zo worden tabellen zoals "order_line" netjes aangemaakt!
+      - name: Run database migrations
+        env:
+          PGPASSWORD: bookstore123
+        run: |
+          for file in migrations/*.sql; do
+            echo "Executing $file..."
+            psql -h localhost -U bookstore -d boekenwebshop -f "$file"
+          done
+
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://bookstore:bookstore123@localhost:5432/boekenwebshop
+          REDIS_URL: redis://localhost:6379
+        run: bun run test

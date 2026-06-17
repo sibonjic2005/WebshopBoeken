@@ -1,15 +1,19 @@
 import Link from "next/link";
-import { loadBooks, loadCategories, loadFeaturedBooks } from "./books-actions";
+import { loadBooks, loadCategories, loadFeaturedBooks, loadRecommendedBooks } from "./books-actions";
 import { BooksList } from "./books-list";
 import { CoverImage } from "./cover-image";
 import ConfirmOrder from "./checkout/ConfirmOrder";
+import { getUserSession } from "./lib/session";
 
 export default async function Home() {
-  const [initialBooks, categories, featuredBooks] = await Promise.all([
+  const [initialBooks, categories, featuredBooks, userId] = await Promise.all([
     loadBooks(0),
     loadCategories(),
     loadFeaturedBooks(),
+    getUserSession(),
   ]);
+
+  const recommendedBooks = await loadRecommendedBooks(userId);
 
   return (
     <>
@@ -61,7 +65,32 @@ export default async function Home() {
         </section>
       )}
 
-      <BooksList initialBooks={initialBooks} categories={categories} />
+      {recommendedBooks.length > 0 && (
+        <section className="mb-16">
+          <h2 className="mb-6 text-xl font-semibold tracking-tight text-center">
+            Aanbevolen Voor Jou!
+          </h2>
+          <div className="flex justify-center gap-4 overflow-x-auto pb-2">
+            {recommendedBooks.map((book) => (
+              <Link key={book.id} href={`/books/${book.id}`} className="group flex flex-col gap-2 min-w-[140px] w-[140px] shrink-0">
+                <div className="aspect-[2/3] overflow-hidden rounded">
+                  <CoverImage isbn={book.isbn} id={book.id} title={book.title} size="M" />
+                </div>
+                <div>
+                  <p className="line-clamp-2 text-sm font-medium leading-snug group-hover:underline">
+                    {book.title}
+                  </p>
+                  {book.authors && (
+                    <p className="mt-0.5 truncate text-xs text-zinc-500">{book.authors}</p>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <BooksList initialBooks={initialBooks} categories={categories} userId={userId} />
     </>
   );
 }

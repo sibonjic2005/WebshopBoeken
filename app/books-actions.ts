@@ -68,7 +68,7 @@ const POPULAR_ISBNS = [
   "9781451673318", // Fahrenheit 451 (S&S)
   "9780684801223", // The Old Man and the Sea (Scribner)
   "9782070612758", // Le Petit Prince (Gallimard)
-  "9781476753978", // Salt, Fat, Acid, Heat
+  "9781476753836", // Salt, Fat, Acid, Heat
   "9780735619678", // Code Complete 2
   // Additional popular editions
   "9780451524935", // Nineteen Eighty-Four (Signet)
@@ -148,18 +148,107 @@ export async function loadFeaturedBooks(): Promise<BookRow[]> {
 
 export async function loadRecommended(bookId: number): Promise<BookRow[]> {
   return query<BookRow>(
-    `SELECT DISTINCT b.id, b.title, b.isbn, b.price_cents,
+    `WITH chosen_categories AS (
+        SELECT category_id
+        FROM book_category
+        WHERE book_id = $1
+      )
+    SELECT DISTINCT b.id, b.title, b.isbn, b.price_cents,
             STRING_AGG(a.first_name || ' ' || a.last_name, ', ') AS authors
        FROM book b
        JOIN book_category bc ON bc.book_id = b.id
        LEFT JOIN book_author ba ON ba.book_id = b.id
        LEFT JOIN author a ON a.id = ba.author_id
       WHERE bc.category_id IN (
-        SELECT category_id FROM book_category WHERE book_id = $1
-      )
+        SELECT category_id FROM chosen_categories)
         AND b.id != $1
       GROUP BY b.id
       LIMIT 3`,
     [bookId],
+  );
+}
+
+
+//2 checks, is er wel ingelogd en zijn er aankopen gedaan.
+export async function loadRecommendedBooks(userId: number | null): Promise<BookRow[]> {
+  if (userId) {
+    const personalizedRecommendation = await query<BookRow>(
+      `WITH
+        purchased_category_user AS (
+          SELECT DISTINCT bc.category_id
+          FROM order_line ol
+          JOIN shop_order so ON so.id = ol.order_id
+          JOIN book_category bc ON bc.book_id = ol.book_id
+          WHERE so.user_id = $1
+        ),
+        already_bought AS (
+          SELECT ol2.book_id
+          FROM order_line ol2
+          JOIN shop_order so2 ON so2.id = ol2.order_id
+          WHERE so2.user_id = $1
+        )
+       SELECT b.id, b.title, b.isbn, b.price_cents,
+              STRING_AGG(a.first_name || ' ' || a.last_name, ', ') AS authors
+         FROM book b
+         JOIN book_category bc2 ON bc2.book_id = b.id
+         JOIN order_line ol3 ON ol3.book_id = b.id
+         JOIN shop_order so3 ON so3.id = ol3.order_id
+         LEFT JOIN book_author ba ON ba.book_id = b.id
+         LEFT JOIN author a ON a.id = ba.author_id
+        WHERE bc2.category_id IN (SELECT category_id FROM purchased_category_user)
+          AND b.id NOT IN (SELECT book_id FROM already_bought)
+        GROUP BY b.id
+        ORDER BY COUNT(ol3.id) DESC
+        LIMIT 3`,
+      [userId]
+    );
+
+    // DIT WAS NOG ZONDER CTE.
+    // const personalizedRecommendation = await query<BookRow>(
+    //   `SELECT b.id, b.title, b.isbn, b.price_cents,
+    //           STRING_AGG(a.first_name || ' ' || a.last_name, ', ') AS authors
+    //      FROM book b
+    //      JOIN book_category bc ON bc.book_id = b.id
+    //      JOIN order_line ol ON ol.book_id = b.id
+    //      JOIN shop_order so ON so.id = ol.order_id
+    //      LEFT JOIN book_author ba ON ba.book_id = b.id
+    //      LEFT JOIN author a ON a.id = ba.author_id
+    //     WHERE bc.category_id IN (
+    //       SELECT DISTINCT bc2.category_id
+    //       FROM order_line ol2
+    //       JOIN shop_order so2 ON so2.id = ol2.order_id
+    //       JOIN book_category bc2 ON bc2.book_id = ol2.book_id
+    //       WHERE so2.user_id = $1
+    //     )
+    //     AND b.id NOT IN (
+    //       SELECT ol3.book_id
+    //       FROM order_line ol3
+    //       JOIN shop_order so3 ON so3.id = ol3.order_id
+    //       WHERE so3.user_id = $1
+    //     )
+    //     GROUP BY b.id
+    //     ORDER BY COUNT(ol.id) DESC
+    //     LIMIT 3`,
+    //   [userId]
+    // );
+
+    //deze check is om te kijken of er wel aankopen zijn gedaan. anders valt het neer naar de else hieronder.
+    if (personalizedRecommendation.length > 0){
+      return personalizedRecommendation;
+    }
+  }
+
+  // dit is wat er runt als er geen user is of er geen aankopen zijn .
+  return query<BookRow>(
+    `SELECT b.id, b.title, b.isbn, b.price_cents,
+            STRING_AGG(a.first_name || ' ' || a.last_name, ', ') AS authors
+       FROM book b
+       JOIN order_line ol ON ol.book_id = b.id
+       LEFT JOIN book_author ba ON ba.book_id = b.id
+       LEFT JOIN author a ON a.id = ba.author_id
+      GROUP BY b.id
+      ORDER BY COUNT(ol.id) DESC
+      LIMIT 3`,
+    []
   );
 }

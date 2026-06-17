@@ -4,19 +4,21 @@
   "private": true,
   "scripts": {
     "db": "docker compose up -d",
-    "migrate": "docker compose exec db psql -U boekenhandel -d boekenhandel -f /migrations/001_schema.sql -f /migrations/002_review.sql -f /migrations/003_seed.sql",
+    "migrate": "DATABASE_URL=postgresql://boekenhandel:boekenhandel@localhost:5434/boekenhandel bun run scripts/migrate.ts",
+    "migrate:remote": "bun run scripts/migrate.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint && next lint",
-    "import-books": "bun run scripts/import-books.ts",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "lint": "eslint && next lint",
+    "import-books": "bun run scripts/import-books.ts"
   },
   "dependencies": {
     "@types/swagger-ui-react": "^5.18.0",
     "bcryptjs": "^3.0.3",
+    "ioredis": "^5.11.0",
     "lucide-react": "^1.14.0",
     "next": "16.1.6",
     "pg": "^8.18.0",
@@ -38,6 +40,7 @@
     "lightningcss": "^1.32.0",
     "tailwindcss": "^4",
     "ts-jest": "^29.4.11",
+    "ts-node": "^10.9.2",
     "typescript": "^5"
   },
   "ignoreScripts": [

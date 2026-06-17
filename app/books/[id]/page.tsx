@@ -6,6 +6,7 @@ import { loadBook, loadRecommended } from "@/app/books-actions";
 import type { BookRow } from "@/app/books-shared";
 import { CoverImage } from "@/app/cover-image";
 import { getUserSession } from "@/app/lib/session";
+import { incrementBookView, getBookViews } from "@/app/lib/views";
 
 function SmallBookCard({ book }: { book: BookRow }) {
   return (
@@ -41,10 +42,11 @@ export default async function BookPage({
   const bookId = parseInt(id, 10);
   if (isNaN(bookId)) notFound();
 
-  const [book, recommended, userId] = await Promise.all([
+  const [book, recommended, userId, views] = await Promise.all([
     loadBook(bookId),
     loadRecommended(bookId),
     getUserSession(),
+    incrementBookView(bookId).then(() => getBookViews(bookId)),
   ]);
 
   if (!book) notFound();
@@ -116,6 +118,10 @@ export default async function BookPage({
               <div className="flex gap-2">
                 <dt className="w-24 shrink-0 text-zinc-400">Voorraad</dt>
                 <dd>{book.stock > 0 ? `${book.stock} beschikbaar` : "Niet op voorraad"}</dd>
+              </div>
+              <div className="flex gap-2">
+                <dt className="w-24 shrink-0 text-zinc-400">Bekeken</dt>
+                <dd>{views} {views === 1 ? "keer" : "keer"}</dd>
               </div>
             </dl>
           </div>

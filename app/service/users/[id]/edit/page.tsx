@@ -1,0 +1,81 @@
+import { notFound } from "next/navigation";
+import { query } from "@/app/db";
+import { updateUserProfile } from "../../actions";
+import { BackLink } from "@/app/BackLink";
+
+type User = {
+  id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+};
+
+export default async function ServiceEditUserPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const rows = await query<User>(
+    "SELECT id, email, first_name, last_name FROM customer WHERE id = $1 AND deleted_at IS NULL",
+    [id],
+  );
+  if (rows.length === 0) notFound();
+  const user = rows[0];
+
+  return (
+    <>
+      <BackLink href="/service/users" label="Users" />
+      <h1 className="mb-6 text-2xl font-bold">Edit user</h1>
+      <form action={updateUserProfile} className="max-w-md space-y-4">
+        <input type="hidden" name="id" value={user.id} />
+        <div>
+          <label
+            htmlFor="first_name"
+            className="mb-1 block text-sm font-medium"
+          >
+            First name
+          </label>
+          <input
+            id="first_name"
+            name="first_name"
+            required
+            defaultValue={user.first_name}
+            className="w-full rounded-lg border px-3 py-2"
+          />
+        </div>
+        <div>
+          <label htmlFor="last_name" className="mb-1 block text-sm font-medium">
+            Last name
+          </label>
+          <input
+            id="last_name"
+            name="last_name"
+            required
+            defaultValue={user.last_name}
+            className="w-full rounded-lg border px-3 py-2"
+          />
+        </div>
+        <div>
+          <label htmlFor="email" className="mb-1 block text-sm font-medium">
+            Email
+          </label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            defaultValue={user.email}
+            className="w-full rounded-lg border px-3 py-2"
+          />
+        </div>
+        <button
+          type="submit"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm text-white hover:bg-zinc-700"
+        >
+          Save
+        </button>
+      </form>
+    </>
+  );
+}

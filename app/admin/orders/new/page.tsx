@@ -1,5 +1,6 @@
 import { query } from "@/app/db";
 import { createOrder } from "../actions";
+import { BackLink } from "@/app/BackLink";
 
 type User = { id: number; first_name: string; last_name: string };
 type Book = { id: number; title: string; price_cents: number };
@@ -7,13 +8,14 @@ type Book = { id: number; title: string; price_cents: number };
 export default async function NewOrderPage() {
   const [users, books] = await Promise.all([
     query<User>(
-      "SELECT id, first_name, last_name FROM customer ORDER BY last_name, first_name"
+      "SELECT id, first_name, last_name FROM customer WHERE deleted_at IS NULL ORDER BY last_name, first_name"
     ),
     query<Book>("SELECT id, title, price_cents FROM book ORDER BY title"),
   ]);
 
   return (
     <>
+      <BackLink href="/admin/orders" label="Orders" />
       <h1 className="mb-6 text-2xl font-bold">New order</h1>
       <form action={createOrder} className="max-w-md space-y-4">
         <div>

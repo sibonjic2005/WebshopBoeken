@@ -1,0 +1,5 @@
+ALTER TABLE customer
+  ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'customer';
+
+ALTER TABLE customer
+  DROP CONSTRAINT IF EXISTS customer_role_check;

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { query } from "@/app/db";
 import { updateOrder } from "../../actions";
+import { BackLink } from "@/app/BackLink";
 
 type Order = {
   id: number;
@@ -45,6 +46,7 @@ export default async function EditOrderPage({
 
   return (
     <>
+      <BackLink href="/admin/orders" label="Orders" />
       <h1 className="mb-6 text-2xl font-bold">Order #{order.id}</h1>
 
       <div className="mb-6 max-w-md space-y-2 text-sm">

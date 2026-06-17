@@ -8,14 +8,16 @@ import { addToCart } from "./cart/actions";
 import { PAGE_SIZE, type BookRow, type CategoryRow } from "./books-shared";
 import { CoverImage } from "./cover-image";
 
-const userId = 1;
-
-function AddToCartButton({ bookId }: { bookId: number }) {
+function AddToCartButton({ bookId, userId }: { bookId: number; userId: number | null }) {
   const [pending, startTransition] = useTransition();
   const [added, setAdded] = useState(false);
 
   function handleClick(e: React.MouseEvent) {
     e.preventDefault();
+    if (!userId) {
+      window.location.href = "/user/login";
+      return;
+    }
     startTransition(async () => {
       await addToCart(userId, bookId);
       setAdded(true);
@@ -42,9 +44,11 @@ function AddToCartButton({ bookId }: { bookId: number }) {
 export function BooksList({
   initialBooks,
   categories,
+  userId,
 }: {
   initialBooks: BookRow[];
   categories: CategoryRow[];
+  userId: number | null;
 }) {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [books, setBooks] = useState<BookRow[]>(initialBooks);
@@ -130,7 +134,7 @@ export function BooksList({
                 <span className="absolute left-3 top-3 rounded-full bg-red-500 px-3 py-1 text-xs font-semibold text-white">
                   Nieuw
                 </span>
-                <AddToCartButton bookId={book.id} />
+                <AddToCartButton bookId={book.id} userId={userId} />
                 <div className="aspect-[2/3] max-h-64 overflow-hidden">
                   <CoverImage isbn={book.isbn} id={book.id} title={book.title} size="M" />
                 </div>
