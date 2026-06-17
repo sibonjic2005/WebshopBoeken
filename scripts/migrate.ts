@@ -18,6 +18,7 @@ try {
     "migrations/002_customer_role.sql",
     "migrations/003_seed.sql",
     "migrations/004_fix_sequence.sql",
+    "migrations/005_soft_delete_customer.sql",
   ]) {
     const sql = await readFile(file, "utf-8");
     await pool.query(sql);
@@ -33,7 +34,7 @@ try {
     INSERT INTO customer (email, password_hash, first_name, last_name, role) VALUES
       ('admin@example.com',   '$2b$10$5HuP/mXJhJoTWU9y33BgZeTPDkU9Cd.8dhdrkAZRmfdYxx/KAtys.', 'Alice', 'Jansen',  'admin'),
       ('service@example.com', '$2b$10$5HuP/mXJhJoTWU9y33BgZeTPDkU9Cd.8dhdrkAZRmfdYxx/KAtys.', 'Sam',   'Service', 'service')
-    ON CONFLICT (email) DO UPDATE SET
+    ON CONFLICT (email) WHERE deleted_at IS NULL DO UPDATE SET
       password_hash = EXCLUDED.password_hash,
       role          = EXCLUDED.role
   `);

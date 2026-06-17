@@ -18,7 +18,7 @@ export default async function EditUserPage({
 }) {
   const { id } = await params;
   const rows = await query<User>(
-    "SELECT id, email, first_name, last_name, role FROM customer WHERE id = $1",
+    "SELECT id, email, first_name, last_name, role FROM customer WHERE id = $1 AND deleted_at IS NULL",
     [id],
   );
   if (rows.length === 0) notFound();

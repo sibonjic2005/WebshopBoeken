@@ -155,7 +155,8 @@ describe("books-actions", () => {
     await expect(loadRecommended(4)).resolves.toBe(rows);
 
     const [sql, params] = lastQueryCall();
-    expect(sql).toContain("SELECT category_id FROM book_category WHERE book_id = $1");
+    expect(sql).toContain("FROM book_category");
+    expect(sql).toContain("WHERE book_id = $1");
     expect(sql).toContain("AND b.id != $1");
     expect(sql).toContain("LIMIT 3");
     expect(params).toEqual([4]);

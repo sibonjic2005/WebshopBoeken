@@ -50,7 +50,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   if (!userId) return null;
 
   const users = await query<CurrentUser>(
-    "SELECT id, role FROM customer WHERE id = $1",
+    "SELECT id, role FROM customer WHERE id = $1 AND deleted_at IS NULL",
     [userId],
   );
 
