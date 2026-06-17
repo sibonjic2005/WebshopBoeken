@@ -58,7 +58,7 @@ export async function registerUser(
   try {
     // Check if email already exists
     const existingUser = await query(
-      "SELECT id FROM customer WHERE email = $1 AND deleted_at IS NULL",
+      "SELECT id FROM active_customer WHERE email = $1",
       [email]
     );
 
@@ -121,10 +121,7 @@ export async function loginUser(
     const users = await query<{
       id: number;
       password_hash: string;
-    }>(
-      "SELECT id, password_hash FROM customer WHERE email = $1 AND deleted_at IS NULL",
-      [email],
-    );
+    }>("SELECT id, password_hash FROM active_customer WHERE email = $1", [email]);
 
     if (users.length === 0) {
       return {

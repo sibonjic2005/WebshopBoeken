@@ -30,10 +30,9 @@ export default async function AccountPage() {
     email: string;
     first_name: string;
     last_name: string;
-  }>(
-    "SELECT id, email, first_name, last_name FROM customer WHERE id = $1 AND deleted_at IS NULL",
-    [userId],
-  );
+  }>("SELECT id, email, first_name, last_name FROM active_customer WHERE id = $1", [
+    userId,
+  ]);
 
   if (users.length === 0) {
     redirect("/user/login");
