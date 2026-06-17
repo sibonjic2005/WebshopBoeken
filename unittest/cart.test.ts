@@ -1,4 +1,4 @@
-import { jest, describe, it, expect, beforeEach } from "@jest/globals";
+import { describe, it, expect, beforeEach } from "@jest/globals";
 
 import { revalidatePath } from "next/cache";
 import { query } from "@/app/db";
@@ -11,7 +11,7 @@ import {
 } from "@/app/cart/actions";
 
 jest.mock("next/cache", () => ({ revalidatePath: jest.fn() }));
-jest.mock("@/app/db", () => ({ query: jest.fn() }));
+jest.mock("@/app/db");
 
 const queryMock = query as jest.MockedFunction<
   (sql: string, params?: unknown[]) => Promise<unknown[]>
