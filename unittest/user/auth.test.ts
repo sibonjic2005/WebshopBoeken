@@ -5,6 +5,7 @@ import bcryptjs from "bcryptjs";
 import { redirect } from "next/navigation";
 
 jest.mock("@/app/db");
+jest.mock("@/app/lib/redis", () => ({ redis: { set: jest.fn(), get: jest.fn(), del: jest.fn() } }));
 jest.mock("@/app/lib/session");
 jest.mock("bcryptjs");
 jest.mock("next/navigation");
