@@ -46,6 +46,9 @@ export async function deleteUser(formData: FormData) {
   await requireAdmin();
 
   const id = formData.get("id") as string;
-  await query("DELETE FROM customer WHERE id = $1", [id]);
+  await query(
+    "UPDATE customer SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL",
+    [id],
+  );
   redirect("/admin/users");
 }

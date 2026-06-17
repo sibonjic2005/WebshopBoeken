@@ -25,10 +25,12 @@ export default async function UsersPage({
 
   const [users, countResult] = await Promise.all([
     query<User>(
-      "SELECT id, email, first_name, last_name, role FROM customer ORDER BY last_name, first_name LIMIT $1 OFFSET $2",
+      "SELECT id, email, first_name, last_name, role FROM customer WHERE deleted_at IS NULL ORDER BY last_name, first_name LIMIT $1 OFFSET $2",
       [PAGE_SIZE, offset],
     ),
-    query<{ total: string }>("SELECT COUNT(*) AS total FROM customer"),
+    query<{ total: string }>(
+      "SELECT COUNT(*) AS total FROM customer WHERE deleted_at IS NULL",
+    ),
   ]);
 
   const totalPages = Math.ceil(parseInt(countResult[0].total, 10) / PAGE_SIZE);

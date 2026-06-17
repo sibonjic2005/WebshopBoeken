@@ -12,7 +12,7 @@ type User = {
 
 export default async function ServiceUsersPage() {
   const users = await query<User>(
-    "SELECT id, email, first_name, last_name, role FROM customer ORDER BY last_name, first_name",
+    "SELECT id, email, first_name, last_name, role FROM customer WHERE deleted_at IS NULL ORDER BY last_name, first_name",
   );
 
   return (
